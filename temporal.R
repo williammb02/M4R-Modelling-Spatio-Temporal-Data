@@ -124,7 +124,18 @@ feat_stl(miami_u10, .period=12, s.window = "periodic", t.window=length(miami_u10
 feat_stl(miami_v10, .period=12, s.window = "periodic", t.window=length(miami_v10))
 feat_stl(miami_tp, .period=12, s.window = "periodic", t.window=length(miami_tp))
 
-# correlation structures of remainders
+# function that returns all 3 correlation measures
+cors <- function(x, y){
+  p <- cor(x, y, method="pearson")
+  k <- cor(x, y, method="kendall")
+  s <- cor(x, y, method="spearman")
+  c(p,k,s)
+}
+
+# correlation
+cors(miami_u10, miami_v10)
+cors(miami_u10_rem, miami_v10_rem)
+
 QFcor_plot(miami_u10, miami_v10, grid=100, xlim=c(0.05, 0.95), ylim=c(0.05, 0.95))
 QFcor_plot(miami_u10_rem, miami_v10_rem, grid=100, xlim=c(0.05, 0.95), ylim=c(0.05, 0.95))
 
