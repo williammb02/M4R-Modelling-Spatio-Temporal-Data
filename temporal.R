@@ -45,7 +45,7 @@ acf(nyc_remainder)
 hist(nyc_remainder)
 plot(periodogram(as.vector(nyc_remainder)), type = "l")
 
-# stl decomposition of precipitation
+# stl decomposition of precipitation in miami
 ts_miami_tp <- ts(miami_tp, frequency = 12)
 miami_tp_trends <- stl(ts_miami_tp, s.window = "periodic", t.window = length(ts_miami_tp))
 plot(miami_tp_trends, main = "Additive STL Decomposition of Total Precipitation in Miami")
@@ -132,15 +132,13 @@ cors <- function(x, y){
   c(p,k,s)
 }
 
-# correlation
+# compute correlation
 cors(miami_u10, miami_v10)
 cors(miami_u10_rem, miami_v10_rem)
 
+# create QF and CDF correlation plots
 QFcor_plot(miami_u10, miami_v10, grid=100, xlim=c(0.05, 0.95), ylim=c(0.05, 0.95))
 QFcor_plot(miami_u10_rem, miami_v10_rem, grid=100, xlim=c(0.05, 0.95), ylim=c(0.05, 0.95))
-
-aa <- miami_u10
-bb <- miami_v10
-CDFcor_plot(aa, bb, grid=100, xlim=c(-4, 0.8), ylim=c(-2, 1.5))
+CDFcor_plot(miami_u10, miami_v10, grid=100, xlim=c(-4, 0.8), ylim=c(-2, 1.5))
 
 
