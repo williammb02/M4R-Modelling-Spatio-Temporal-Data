@@ -17,6 +17,7 @@ library(ncf)
 library(GCor)
 library(ghyp)
 library(forecast)
+library(feasts)
 
 # read in the data
 climate_data <- nc_open('m4rdata.nc')
@@ -64,3 +65,4 @@ dc_index <- city_coord_index(38.9, -77.0)
 miami_index <- city_coord_index(25.8, -80.2)
 tampa_index <- city_coord_index(28.0, -82.5)
 tallahassee_index <- city_coord_index(30.4, -84.2)
+
