@@ -51,33 +51,33 @@ miami_tp_trends <- stl(ts_miami_tp, s.window = "periodic", t.window = length(ts_
 plot(miami_tp_trends, main = "Additive STL Decomposition of Total Precipitation in Miami")
 
 # exploratory plots for the remainder
-miami_remainder <- miami_tp_trends$time.series[,3]
+miami_tp_rem <- miami_tp_trends$time.series[,3]
 par(mfrow = c(2,2))
 # change between acf and pacf for an appropriate plot, pacf removes irrelevant 1.0 term
-pacf(miami_remainder)
-hist(miami_remainder, main = "Histogram")
-plot(periodogram(as.vector(miami_remainder)), type = "l", ylab = "", main = "Periodogram")
-qqnorm(miami_remainder)
-qqline(miami_remainder, col = "red")
+pacf(miami_tp_rem)
+hist(miami_tp_rem, main = "Histogram")
+plot(periodogram(as.vector(miami_tp_rem)), type = "l", ylab = "", main = "Periodogram")
+qqnorm(miami_tp_rem)
+qqline(miami_tp_rem, col = "red")
 
 # fit ARIMA model to Miami total precipitation
 miami_model <- auto.arima(miami_tp, ic = "aicc")
 print(miami_model)
 checkresiduals(miami_model)
 
-# fit an ARIMA model to the remainders
-miami_remainder_model <- auto.arima(miami_remainder, ic = "aicc")
+# fit an ARIMA model to the tp remainder
+miami_remainder_model <- auto.arima(miami_tp_rem, ic = "aicc")
 print(miami_remainder_model)
 checkresiduals(miami_remainder_model)
 
 # fit a generalised hyperbolic distribution to the data
-miami_rem_ghyp <- stepAIC.ghyp(miami_remainder, silent = TRUE)
-hist(miami_rem_ghyp$best.model, main = "Histogram")
+miami_tp_rem_ghyp <- stepAIC.ghyp(miami_tp_rem, silent = TRUE)
+hist(miami_tp_rem_ghyp$best.model, main = "Histogram")
 
 # analysis of absolute value or square of residuals
 par(mfrow = c(1,2))
-pacf(abs(miami_remainder))
-pacf(miami_remainder^2)
+pacf(abs(miami_tp_rem))
+pacf(miami_tp_rem^2)
 
 # try stl decomposition of total precipitation, under first differencing
 ts_miami_tp <- ts(diff(miami_tp), frequency = 12)
@@ -86,10 +86,50 @@ plot(miami_tp_trends, main = "STL Decomposition of Precipitation in Miami, 1st D
 
 # stl decomposition of u10 wind
 ts_miami_u10 <- ts(miami_u10, frequency = 12)
-miami_u10_trends <- stl(ts_miami_u10, s.window = "periodic")
+miami_u10_trends <- stl(ts_miami_u10, s.window = "periodic", t.window = length(miami_u10))
 plot(miami_u10_trends, main = "Additive STL Decomposition of u10 in Miami")
 
 # stl decomposition of v10 wind
 ts_miami_v10 <- ts(miami_v10, frequency = 12)
-miami_v10_trends <- stl(ts_miami_v10, s.window = "periodic")
+miami_v10_trends <- stl(ts_miami_v10, s.window = "periodic", t.window = length(miami_v10))
 plot(miami_v10_trends, main = "Additive STL Decomposition of v10 in Miami")
+
+# consider all remainders
+miami_tp_rem <- miami_tp_trends$time.series[, 3]
+miami_u10_rem <- miami_u10_trends$time.series[, 3]
+miami_v10_rem <- miami_v10_trends$time.series[, 3]
+
+# fit ghyp distribution to remainders, and exploratory analysis
+miami_urem_ghyp <- stepAIC.ghyp(miami_u10_rem, silent = TRUE)
+hist(miami_urem_ghyp$best.model, ylim=c(0,0.5), main = "Histogram")
+miami_vrem_ghyp <- stepAIC.ghyp(miami_v10_rem, silent = TRUE)
+hist(miami_vrem_ghyp$best.model, main = "Histogram")
+
+par(mfrow = c(2,2))
+pacf(miami_u10_rem)
+hist(miami_u10_rem, main = "Histogram")
+plot(periodogram(as.vector(miami_u10_rem)), type = "l", ylab = "", main = "Periodogram")
+qqnorm(miami_u10_rem, main = "Normal QQ Plot for u-component")
+qqline(miami_u10_rem, col = "red")
+
+par(mfrow = c(2,2))
+pacf(miami_v10_rem)
+hist(miami_v10_rem, main = "Histogram")
+plot(periodogram(as.vector(miami_v10_rem)), type = "l", ylab = "", main = "Periodogram")
+qqnorm(miami_v10_rem, main = "Normal QQ Plot for v-component")
+qqline(miami_v10_rem, col = "red")
+
+# consider features of wind decompositions
+feat_stl(miami_u10, .period=12, s.window = "periodic", t.window=length(miami_u10))
+feat_stl(miami_v10, .period=12, s.window = "periodic", t.window=length(miami_v10))
+feat_stl(miami_tp, .period=12, s.window = "periodic", t.window=length(miami_tp))
+
+# correlation structures of remainders
+QFcor_plot(miami_u10, miami_v10, grid=100, xlim=c(0.05, 0.95), ylim=c(0.05, 0.95))
+QFcor_plot(miami_u10_rem, miami_v10_rem, grid=100, xlim=c(0.05, 0.95), ylim=c(0.05, 0.95))
+
+aa <- miami_u10
+bb <- miami_v10
+CDFcor_plot(aa, bb, grid=100, xlim=c(-4, 0.8), ylim=c(-2, 1.5))
+
+
