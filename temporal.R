@@ -141,4 +141,33 @@ QFcor_plot(miami_u10, miami_v10, grid=100, xlim=c(0.05, 0.95), ylim=c(0.05, 0.95
 QFcor_plot(miami_u10_rem, miami_v10_rem, grid=100, xlim=c(0.05, 0.95), ylim=c(0.05, 0.95))
 CDFcor_plot(miami_u10, miami_v10, grid=100, xlim=c(-4, 0.8), ylim=c(-2, 1.5))
 
+# fit a distribution to u and v components
+# consider regular 
 
+
+# consider absolute value
+abs_u <- abs(miami_u10)
+abs_v <- abs(miami_v10)
+
+
+# fit a distribution to wind speed
+# try ghyp
+miami_speed <- sqrt(miami_u10^2 + miami_v10^2)
+miami_speed_ghyp <- stepAIC.ghyp(miami_speed, silent = TRUE)
+hist(miami_speed_ghyp$best.model, main="Histogram", ylim=c(0, 0.5))
+
+# try weibull distribution
+miami_speed_weib <- fitdistr(miami_speed, "weibull")
+param <- miami_speed_weib$estimate
+x <- seq(0, 7, length.out=1000)
+hist(miami_speed, breaks=30, freq=FALSE, main="2-Parameter Weibull")
+lines(x, dweibull(x, param[1], param[2]), col="blue")
+
+# three parameter weibull distribution, rescale
+mu <- min(miami_speed)
+rescaled_speed <- miami_speed - mu
+rescaled_speed[match(0, rescaled_speed)] <- 0.00000000001
+rescaled_weib <- fitdistr(rescaled_speed, "weibull")
+param2 <- rescaled_weib$estimate
+hist(miami_speed, breaks=30, freq=FALSE, main="3-Parameter Weibull")
+lines(x, dweibull(x, param2[1], param2[2]), col="blue")
