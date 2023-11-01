@@ -19,6 +19,7 @@ library(ghyp)
 library(forecast)
 library(feasts)
 library(fitdistrplus)
+library(FAdist)
 
 # read in the data
 climate_data <- nc_open('m4rdata.nc')
