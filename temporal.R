@@ -142,12 +142,38 @@ QFcor_plot(miami_u10_rem, miami_v10_rem, grid=100, xlim=c(0.05, 0.95), ylim=c(0.
 CDFcor_plot(miami_u10, miami_v10, grid=100, xlim=c(-4, 0.8), ylim=c(-2, 1.5))
 
 # fit a distribution to u and v components
-# consider regular 
+# consider u and v components before any transformations
+# ghyp distribution
+u_ghyp <- stepAIC.ghyp(miami_u10, silent = TRUE)
+hist(u_ghyp$best.model, main="Histogram", ylim=c(0,0.5))
 
+# best model is essentially identical to gaussian, fit normal dist
+u_norm <- fitdistr(miami_u10, "normal")
+hist(miami_u10, freq=FALSE, breaks=50)
+lines(seq(-5, 5, by=0.1), dnorm(seq(-5, 5, by=0.1), u_norm[1], u_norm[2]))
+
+v_ghyp <- stepAIC.ghyp(miami_v10, silent = TRUE)
+hist(v_ghyp$best.model, main="Histogram", ylim=c(0,0.5))
+
+v_log <- fitdistr(miami_v10, "logistic")
+hist(miami_v10, freq=FALSE, breaks=50)
+lines(seq(-5,5,by=0.1), dlogis(seq(-5,5,by=0.1), v_log$estimate[1], v_log$estimate[2]))
 
 # consider absolute value
 abs_u <- abs(miami_u10)
 abs_v <- abs(miami_v10)
+
+abs_u_weib <- fitdistr(abs_u, "weibull")
+u_param <- abs_u_weib$estimate
+x <- seq(0, 7, length.out=1000)
+hist(abs_u, breaks=30, freq=FALSE, main="2-Parameter Weibull")
+lines(x, dweibull(x, u_param[1], u_param[2]), col="blue")
+
+abs_v_weib <- fitdistr(abs_v, "weibull")
+v_param <- abs_v_weib$estimate
+x <- seq(0, 7, length.out=1000)
+hist(abs_v, breaks=30, freq=FALSE, main="2-Parameter Weibull")
+lines(x, dweibull(x, v_param[1], v_param[2]), col="blue")
 
 
 # fit a distribution to wind speed
