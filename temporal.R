@@ -138,6 +138,10 @@ cors <- function(x, y){
 cors(miami_u10, miami_v10)
 cors(miami_u10_rem, miami_v10_rem)
 
+cors(miami_u10, tallahassee_u10)
+cors(miami_u10, tampa_u10)
+cors(miami_v10, tampa_v10)
+
 # create QF and CDF correlation plots
 QFcor_plot(miami_u10, miami_v10, grid=100, xlim=c(0.05, 0.95), ylim=c(0.05, 0.95))
 QFcor_plot(miami_u10_rem, miami_v10_rem, grid=100, xlim=c(0.05, 0.95), ylim=c(0.05, 0.95))
