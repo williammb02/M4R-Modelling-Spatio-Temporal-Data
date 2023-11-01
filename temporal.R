@@ -141,6 +141,8 @@ QFcor_plot(miami_u10, miami_v10, grid=100, xlim=c(0.05, 0.95), ylim=c(0.05, 0.95
 QFcor_plot(miami_u10_rem, miami_v10_rem, grid=100, xlim=c(0.05, 0.95), ylim=c(0.05, 0.95))
 CDFcor_plot(miami_u10, miami_v10, grid=100, xlim=c(-4, 0.8), ylim=c(-2, 1.5))
 
+
+
 # fit a distribution to u and v components
 # consider u and v components before any transformations
 # ghyp distribution
@@ -152,6 +154,7 @@ u_norm <- fitdistr(miami_u10, "normal")
 hist(miami_u10, freq=FALSE, breaks=50)
 lines(seq(-5, 5, by=0.1), dnorm(seq(-5, 5, by=0.1), u_norm[1], u_norm[2]))
 
+# for v, try a ghyp or a three parameter weibull distribution
 v_ghyp <- stepAIC.ghyp(miami_v10, silent = TRUE)
 hist(v_ghyp$best.model, main="Histogram", ylim=c(0,0.5))
 
@@ -174,7 +177,6 @@ v_param <- abs_v_weib$estimate
 x <- seq(0, 7, length.out=1000)
 hist(abs_v, breaks=30, freq=FALSE, main="2-Parameter Weibull")
 lines(x, dweibull(x, v_param[1], v_param[2]), col="blue")
-
 
 # fit a distribution to wind speed
 # try ghyp
