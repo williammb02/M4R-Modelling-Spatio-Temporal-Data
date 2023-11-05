@@ -172,8 +172,9 @@ uparam <- rescaled_u_weib$estimate
 hist(miami_u10, breaks=30, freq=FALSE, main="u")
 lines(y, dweibull3(y, uparam[1], uparam[2], u_mu), col="blue")
 lines(y, dnorm(y, nparam[1], nparam[2]), col="red")
-legend(-1, 0.4, legend=c("Normal", "3-Parameter Weibull"), 
-       col = c("red", "blue"),lty=1, cex=0.8)
+lines(y, dghyp(y, object = u_ghyp$best.model), col="green")
+legend(-1.2, 0.4, legend=c("Normal", "3-Parameter Weibull", "Generalised Hyperbolic"), 
+       col = c("red", "blue", "green"),lty=1, cex=0.8)
 
 # v component
 # try a ghyp or a three parameter weibull distribution
