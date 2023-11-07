@@ -20,6 +20,8 @@ library(forecast)
 library(feasts)
 library(fitdistrplus)
 library(FAdist)
+library(mclust)
+library(extremogram)
 
 # read in the data
 climate_data <- nc_open('m4rdata.nc')
