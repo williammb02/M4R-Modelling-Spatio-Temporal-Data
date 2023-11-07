@@ -24,12 +24,22 @@ rescaled_u <- miami_u10 - u_mu
 rescaled_u[match(0, rescaled_u)] <- 0.00000000001
 rescaled_u_weib <- fitdistr(rescaled_u, "weibull")
 uparam <- rescaled_u_weib$estimate
-hist(miami_u10, breaks=30, freq=FALSE, main="u")
+hist(miami_u10, breaks=100, freq=FALSE, main="u")
 lines(y, dweibull3(y, uparam[1], uparam[2], u_mu), col="blue")
 lines(y, dnorm(y, nparam[1], nparam[2]), col="red")
 lines(y, dghyp(y, object = u_ghyp$best.model), col="green")
-legend(-1.2, 0.4, legend=c("Normal", "3-Parameter Weibull", "Generalised Hyperbolic"), 
-       col = c("red", "blue", "green"),lty=1, cex=0.8)
+lines(density(miami_u10), col="black")
+legend(-1.2, 0.4, legend=c("Normal", "3-Parameter Weibull", "Generalised Hyperbolic", "Empirical"), 
+       col = c("red", "blue", "green", "black"),lty=1, cex=0.8)
+
+# without 3 param weib
+hist(miami_u10, breaks=100, freq=FALSE, main="u")
+lines(y, dnorm(y, nparam[1], nparam[2]), col="red")
+lines(y, dghyp(y, object = u_ghyp$best.model), col="green")
+lines(density(miami_u10), col="blue")
+legend(-1.2, 0.4, legend=c("Normal", "Generalised Hyperbolic", "Empirical"), 
+       col = c("red", "green", "blue"),lty=1, cex=0.8)
+
 
 # v component
 # try a ghyp or a three parameter weibull distribution
@@ -42,7 +52,7 @@ rescaled_v <- miami_v10 - v_mu
 rescaled_v[match(0, rescaled_v)] <- 0.00000000001
 rescaled_v_weib <- fitdistr(rescaled_v, "weibull")
 vparam <- rescaled_v_weib$estimate
-hist(miami_v10, breaks=30, freq=FALSE, main="v")
+hist(miami_v10, breaks=100, freq=FALSE, main="v")
 lines(y, dweibull3(y, vparam[1], vparam[2], v_mu), col="blue")
 lines(y, dlogis(y, v_log$estimate[1], v_log$estimate[2]), col="red")
 lines(y, dghyp(y, object = v_ghyp$best.model), col="green")
@@ -50,6 +60,15 @@ legend(-4, 0.4, legend=c("Logistic", "3-Parameter Weibull", "Generalised Hyperbo
        col = c("red", "blue", "green"),lty=1, cex=0.8)
 
 # try a mixture model for v
+v_mixture <- Mclust(miami_v10)
+weights <- v_mixture$parameters$pro
+means <- v_mixture$parameters$mean
+sds <- v_mixture$parameters$variance$scale
+
+mixture_density <- densityMclust(miami_v10)
+hist(miami_v10, breaks=100, freq=FALSE, main="v", ylim=c(0, 0.65))
+lines(density(miami_v10), col="black")
+lines(y, weights[1]*dnorm(y, means[1], sds[1])+weights[2]*dnorm(y, means[2], sds[2]), col="blue")
 
 
 # absolute value of u and v component
