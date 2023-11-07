@@ -133,5 +133,4 @@ uv <- cbind(miami_u10, miami_v10)
 uv_mix_dens <- densityMclust(uv)
 plot(uv_mix_dens, what = "density", type = "hdr", data = uv, points.cex = 0.5)
 uv_mixture <- Mclust(uv)
-
 plot(uv_mix_dens, what="density", type="persp")
