@@ -5,6 +5,8 @@ miami_v10 <- import_climate_data("v10", miami_index[1], miami_index[2])
 # consider u and v components before any transformations
 x <- seq(0, 7, length.out=1000) 
 y <- seq(-7, 5, length.out=1000)
+
+
 # u component
 # generalised hyperbolic distribution
 u_ghyp <- stepAIC.ghyp(miami_u10, silent = TRUE)
@@ -15,8 +17,6 @@ u_norm <- fitdistr(miami_u10, "normal")
 nparam <- u_norm$estimate
 hist(miami_u10, freq=FALSE, breaks=50, main="Normal, u")
 lines(y, dnorm(y, nparam[1], nparam[2]))
-
-# empirical density f
 
 # three param weibull
 u_mu <- min(miami_u10)
@@ -94,6 +94,7 @@ qqplot(miami_v10, qlogis(seq(0,1,by=0.005), v_log$estimate[1], v_log$estimate[2]
        ylab="Gaussian Mixture", xlab="Wind Speed", main="Mixture Gaussian QQ Plot")
 abline(0, 1, col="purple")
 
+
 # absolute value of u component
 # use weibull distribution
 abs_u <- abs(miami_u10)
@@ -142,7 +143,7 @@ qqplot(abs_v, qweibull(seq(0,1,by=0.005), v_param[1], v_param[2]),
 abline(0, 1, col="purple")
 
 
-# fit a distribution to wind speed
+# wind speed, norm of two components
 # generalised hyperbolic distribution
 miami_speed <- sqrt(miami_u10^2 + miami_v10^2)
 miami_speed_ghyp <- stepAIC.ghyp(miami_speed, silent = TRUE)
@@ -176,10 +177,10 @@ qqplot(miami_speed, qweibull(seq(0,1,by=0.005), param[1], param[2]),
 abline(0, 1, col="purple")
 
 
-
 # multivariate mixture model
 uv <- cbind(miami_u10, miami_v10)
 uv_mix_dens <- densityMclust(uv)
 plot(uv_mix_dens, what = "density", type = "hdr", data = uv, points.cex = 0.5)
 uv_mixture <- Mclust(uv)
 plot(uv_mix_dens, what="density", type="persp")
+

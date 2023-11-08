@@ -148,3 +148,17 @@ QFcor_plot(miami_u10_rem, miami_v10_rem, grid=100, xlim=c(0.05, 0.95), ylim=c(0.
 CDFcor_plot(miami_u10, miami_v10, grid=100, xlim=c(-4, 0.8), ylim=c(-2, 1.5))
 
 
+# extremogram analysis
+uv <- cbind(miami_u10, miami_v10)
+# nice extremal dependence
+extremogram2(uv, 0.95, 0.95, 100, 1)
+extremogram2(uv, 0.05, 0.05, 100, 2)
+extremogram2(uv, 0.05, 0.95, 100, 3)
+extremogram2(uv, 0.95, 0.05, 100, 4)
+
+extremogram1(miami_u10, 0.95, 100, 1)
+permfn1(miami_u10, 0.95, 50, 2, 1, 100)
+extremogram1(miami_u10, 0.05, 100, 2)
+# stronger pattern in v
+extremogram1(miami_v10, 0.95, 100, 1)
+extremogram1(miami_v10, 0.05, 100, 2)
