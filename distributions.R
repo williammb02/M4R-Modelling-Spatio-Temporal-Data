@@ -32,6 +32,21 @@ lines(density(miami_u10), col="purple")
 legend(-1.2, 0.4, legend=c("Normal", "3-Parameter Weibull", "Generalised Hyperbolic", "Empirical"), 
        col = c("red", "blue", "green", "purple"),lty=1, cex=0.8)
 
+# mixture model for u
+# only returns 1 
+u_mixture <- Mclust(miami_u10)
+u_mix_dens <- densityMclust(miami_u10)
+plot(u_mix_dens, what="density", data=miami_u10, breaks = 30)
+plot(u_mix_dens, what="density", data=miami_u10, breaks = 100)
+plot(u_mix_dens, what="BIC")
+#E: equal variance, V: variable variance
+
+# parameters for model
+u_weights <- u_mixture$parameters$pro
+u_means <- u_mixture$parameters$mean
+u_sds <- sqrt(u_mixture$parameters$variance$sigmasq)
+
+
 # without 3 param weib
 hist(miami_u10, breaks=100, freq=FALSE, main="u")
 lines(y, dnorm(y, nparam[1], nparam[2]), col="red")
@@ -40,6 +55,11 @@ lines(density(miami_u10), col="blue")
 legend(-1.2, 0.4, legend=c("Normal", "Generalised Hyperbolic", "Empirical"), 
        col = c("red", "green", "blue"),lty=1, cex=0.8)
 # note some more mass in the upper tail, skewed slightly compared to norm/ghyp
+
+qqplot(miami_u10, qnorm(seq(0,1, by=0.005), nparam[1], nparam[2]), 
+       ylab="Normal", xlab="Wind Speed", main="Normal QQ Plot")
+abline(0, 1, col="purple")
+
 
 # v component
 # try a ghyp or a three parameter weibull distribution
@@ -61,25 +81,29 @@ legend(-4, 0.4, legend=c("Logistic", "3-Parameter Weibull", "Generalised Hyperbo
 
 # try a mixture model for v
 v_mixture <- Mclust(miami_v10)
-
-plot(mixture_density, what="BIC")
-#E: equal variance, V: variable variance
-
-weights <- v_mixture$parameters$pro
-means <- v_mixture$parameters$mean
-sds <- sqrt(v_mixture$parameters$variance$sigmasq)
-
 v_mix_dens <- densityMclust(miami_v10)
 plot(v_mix_dens, what="density", data=miami_v10, breaks = 30)
 plot(v_mix_dens, what="density", data=miami_v10, breaks = 100)
+plot(v_mix_dens, what="BIC")
+#E: equal variance, V: variable variance
 
+# parameters for model
+v_weights <- v_mixture$parameters$pro
+v_means <- v_mixture$parameters$mean
+v_sds <- sqrt(v_mixture$parameters$variance$sigmasq)
+
+# plot model
 hist(miami_v10, breaks=100, freq=FALSE, main="v")
 lines(density(miami_v10), col="blue")
-lines(y, dlogis(y, v_log$estimate[1], v_log$estimate[2]), col="red")
-lines(y, dghyp(y, object = v_ghyp$best.model), col="green")
-lines(y, weights[1]*dnorm(y, means[1], sds[1])+weights[2]*dnorm(y, means[2], sds[2]), col="purple")
+lines(y, dlogis(y, v_log$estimate[1], v_log$estimate[2]), col="orange")
+lines(y, dghyp(y, object = v_ghyp$best.model), col="purple")
+lines(y, v_weights[1]*dnorm(y, v_means[1], v_sds[1])+v_weights[2]*dnorm(y, v_means[2], v_sds[2]), col="red")
 legend(-4, 0.5, legend=c("Logistic", "Generalised Hyperbolic", "Gaussian Mixture", "Empirical"), 
-       col = c("red", "green", "purple", "blue"),lty=1, cex=0.8)
+       col = c("orange", "purple", "red", "blue"),lty=1, cex=0.8)
+
+qqplot(miami_v10, v_weights[1]*qnorm(seq(0,1,by=0.005), v_means[1], v_sds[1])+v_weights[2]*qnorm(seq(0,1,by=0.005), v_means[2], v_sds[2]), 
+       ylab="Gaussian Mixture", xlab="Wind Speed", main="Mixture Gaussian QQ Plot")
+abline(0, 1, col="purple")
 
 # absolute value of u and v component
 # use weibull distribution
@@ -88,16 +112,29 @@ abs_v <- abs(miami_v10)
 
 abs_u_weib <- fitdistr(abs_u, "weibull")
 u_param <- abs_u_weib$estimate
+
+par(mfrow=c(1,2))
 hist(abs_u, breaks=100, freq=FALSE, main="2-Parameter Weibull, |u|")
 lines(x, dweibull(x, u_param[1], u_param[2]), col="red")
 lines(density(abs_u), col="blue")
+
+qqplot(abs_u, qweibull(seq(0,1,by=0.005), u_param[1], u_param[2]), 
+       ylab="Weibull", xlab="Wind Speed", main="Weibull QQ Plot")
+abline(0, 1, col="purple")
 # might need a mixture model
 
 abs_v_weib <- fitdistr(abs_v, "weibull")
 v_param <- abs_v_weib$estimate
+
+par(mfrow=c(1,2))
 hist(abs_v, breaks=100, freq=FALSE, main="2-Parameter Weibull, |v|")
 lines(x, dweibull(x, v_param[1], v_param[2]), col="red")
 lines(density(abs_v), col="blue")
+
+qqplot(abs_v, qweibull(seq(0,1,by=0.005), v_param[1], v_param[2]), 
+       ylab="Weibull", xlab="Wind Speed", main="Weibull QQ Plot")
+abline(0, 1, col="purple")
+
 
 # fit a distribution to wind speed
 # try ghyp
@@ -126,6 +163,11 @@ lines(x, dweibull(x, param[1], param[2]), col="red")
 lines(density(miami_speed), col="blue")
 legend(4, 0.4, legend=c("2-Parameter Weibull", "Empirical"),
        col = c("red", "blue"), lty=1, cex=0.8)
+
+#qq plot to check the fit
+qqplot(miami_speed, qweibull(seq(0,1,by=0.005), param[1], param[2]), 
+       ylab="Weibull", xlab="Wind Speed", main="Weibull QQ Plot")
+abline(0, 1, col="purple")
 
 
 # multivariate mixture model
