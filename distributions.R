@@ -67,9 +67,11 @@ legend(-4, 0.4, legend=c("Logistic", "3-Parameter Weibull", "Generalised Hyperbo
 # try a mixture model for v
 v_mixture <- Mclust(miami_v10)
 v_mix_dens <- densityMclust(miami_v10)
+par(mfrow=c(2,2))
 plot(v_mix_dens, what="density", data=miami_v10, breaks = 30)
 plot(v_mix_dens, what="density", data=miami_v10, breaks = 100)
 plot(v_mix_dens, what="BIC")
+densityMclust.diagnostic(v_mix_dens, type="qq")
 #E: equal variance, V: variable variance
 
 # parameters for model
