@@ -107,6 +107,8 @@ par(mfrow=c(1,2))
 hist(abs_u, breaks=100, freq=FALSE, main="2-Parameter Weibull, |u|")
 lines(x, dweibull(x, u_param[1], u_param[2]), col="red")
 lines(density(abs_u), col="blue")
+legend(3.2, 0.5, legend=c("Weibull", "Empirical"), 
+       col=c("red", "blue"), lty=1, cex=0.8)
 
 qqplot(abs_u, qweibull(seq(0,1,by=0.005), u_param[1], u_param[2]), 
        ylab="Weibull", xlab="Wind Speed", main="Weibull QQ Plot")
@@ -120,9 +122,12 @@ auw <- abs_u_mixture$pi
 aush <- abs_u_mixture$k
 ausc <- abs_u_mixture$lambda
 
-hist(abs_u, breaks=100, freq=FALSE, main="2-Parameter Weibull, |u|")
+par(mfrow=c(1,2))
+hist(abs_u, breaks=100, freq=FALSE, main="Weibull Mixture, |u|")
 lines(x, auw[1]*dweibull(x, aush[1], ausc[1])+auw[2]*dweibull(x, aush[2], ausc[2]), col="red")
 lines(density(abs_u), col="blue")
+legend(3.2, 0.5, legend=c("Weibull Mixture", "Empirical"), 
+       col=c("red", "blue"), lty=1, cex=0.8)
 
 qqplot(abs_u, auw[1]*qweibull(seq(0,1,by=0.005), aush[1], ausc[1])+auw[2]*qweibull(seq(0,1,by=0.005), aush[2], ausc[2]),
        ylab="Weibull Mixture", xlab="Wind Speed", main="Weibull Mixture QQ Plot")
@@ -137,8 +142,28 @@ par(mfrow=c(1,2))
 hist(abs_v, breaks=100, freq=FALSE, main="2-Parameter Weibull, |v|")
 lines(x, dweibull(x, v_param[1], v_param[2]), col="red")
 lines(density(abs_v), col="blue")
+legend(2.5, 0.8, legend=c("Weibull", "Empirical"), 
+       col=c("red", "blue"), lty=1, cex=0.8)
 
 qqplot(abs_v, qweibull(seq(0,1,by=0.005), v_param[1], v_param[2]), 
+       ylab="Weibull", xlab="Wind Speed", main="Weibull QQ Plot")
+abline(0, 1, col="purple")
+
+# weibull mixture
+abs_v_mixture <- mixfit(abs_v, family="weibull", ncomp=2)
+# pi: proportion, mu: mean, sd: standard deviation
+avw <- abs_v_mixture$pi
+avsh <- abs_v_mixture$k
+avsc <- abs_v_mixture$lambda
+
+par(mfrow=c(1,2))
+hist(abs_v, breaks=100, freq=FALSE, main="Weibull Mixture, |v|")
+lines(x, avw[1]*dweibull(x, avsh[1], avsc[1])+avw[2]*dweibull(x, avsh[2], avsc[2]), col="red")
+lines(density(abs_v), col="blue")
+legend(2.5, 0.8, legend=c("Weibull", "Empirical"), 
+       col=c("red", "blue"), lty=1, cex=0.8)
+
+qqplot(abs_v, avw[1]*qweibull(seq(0,1,by=0.005), avsh[1], avsc[1])+avw[2]*qweibull(seq(0,1,by=0.005), avsh[2], avsc[2]), 
        ylab="Weibull", xlab="Wind Speed", main="Weibull QQ Plot")
 abline(0, 1, col="purple")
 
