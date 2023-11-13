@@ -190,12 +190,14 @@ rescaled_weib <- fitdistr(rescaled_speed, "weibull")
 param2 <- rescaled_weib$estimate
 
 # summary plot showing distributions
+
+par(mfrow=c(1,2))
 hist(miami_speed, breaks=100, freq=FALSE, main="Wind Speed")
 lines(x, dweibull(x, param[1], param[2]), col="red")
 # lines(x, dweibull3(x, param2[1], param2[2], mu), col="blue")
 # lines(x, dghyp(x, object=miami_speed_ghyp$best.model), col="green")
 lines(density(miami_speed), col="blue")
-legend(4, 0.4, legend=c("2-Parameter Weibull", "Empirical"),
+legend(3.2, 0.5, legend=c("2-Parameter Weibull", "Empirical"),
        col = c("red", "blue"), lty=1, cex=0.8)
 
 #qq plot to check the fit
