@@ -23,6 +23,7 @@ library(FAdist)
 library(mclust)
 library(extremogram)
 library(mixR)
+library(extRemes)
 
 # read in the data
 climate_data <- nc_open('m4rdata.nc')

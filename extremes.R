@@ -10,21 +10,22 @@ miami_v10 <- import_climate_data("v10", miami_index[1], miami_index[2])
 tampa_v10 <- import_climate_data("v10", tampa_index[1], tampa_index[2])
 tallahassee_v10 <- import_climate_data("v10", tallahassee_index[1], tallahassee_index[2])
 
+miami_speed <- sqrt(miami_u10^2 + miami_v10^2)
+tampa_speed <- sqrt(tampa_u10^2 + tampa_v10^2)
+talla_speed <- sqrt(tallahassee_u10^2 + tallahassee_v10^2)
 
 # extremogram analysis
 uvm <- cbind(miami_u10, miami_v10)
 utm <- cbind(miami_u10, miami_tp)
 t_mt <- cbind(miami_tp, tampa_tp)
+
+mtp_s <- cbind(miami_speed, tampa_speed)
+mth_s <- cbind(miami_speed, talla_speed)
+tt_s <- cbind(tampa_speed, talla_speed)
 # nice extremal dependence
-# extremogram2(uvm, 0.95, 0.95, 100, 1)
-# extremogram2(uvm, 0.05, 0.05, 100, 2)
-# extremogram2(uvm, 0.05, 0.95, 100, 3)
 extremogram2(uvm, 0.95, 0.05, 100, 4)
 
-
 extremogram2(utm, 0.95, 0.95, 100, 1)
-extremogram2(utm, 0.05, 0.05, 100, 2)
-extremogram2(utm, 0.05, 0.95, 100, 3)
 extremogram2(utm, 0.95, 0.05, 100, 4)
 
 extremogram2(t_mt, 0.95, 0.95, 100, 1)
@@ -33,9 +34,52 @@ extremogram2(t_mt, 0.05, 0.95, 100, 3)
 extremogram2(t_mt, 0.95, 0.05, 100, 4)
 
 extremogram1(miami_u10, 0.95, 100, 1)
-permfn1(miami_u10, 0.95, 50, 2, 1, 100)
 extremogram1(miami_u10, 0.05, 100, 2)
 # stronger pattern in v
 extremogram1(miami_v10, 0.95, 100, 1)
 extremogram1(miami_v10, 0.05, 100, 2)
 
+
+extremogram2(mtp_s, 0.95, 0.95, 100, 1)
+extremogram2(mtp_s, 0.05, 0.05, 100, 2)
+extremogram2(mth_s, 0.95, 0.95, 100, 1)
+extremogram2(mth_s, 0.05, 0.05, 100, 2)
+# one below is very interesting
+extremogram2(tt_s, 0.95, 0.95, 100, 1)
+extremogram2(tt_s, 0.05, 0.05, 100, 2)
+
+extremogram1(miami_tp_rem, 0.95, 100, 1)
+extremogram1(miami_tp_rem, 0.05, 100, 2)
+extremogram1(miami_u10_rem, 0.95, 100, 1)
+extremogram1(miami_u10_rem, 0.05, 100, 2)
+extremogram1(miami_v10_rem, 0.95, 100, 1)
+extremogram1(miami_v10_rem, 0.05, 100, 2)
+
+
+# tail dependence coefficients
+taildeps <- function(x, y){
+  lambda <- c()
+  t <- seq(0.05, 0.95, by=0.025)
+  for(i in 1:length(t)){
+    lambda[i] <- taildep(x, y, t[i], type="chi")
+  }
+  lambda
+}
+
+t <- seq(0.05, 0.95, by=0.025)
+
+# components of wind speed
+plot(t, taildeps(miami_u10, miami_v10), xlab="Probability Treshold", ylab="Coefficient", ylim=c(0,1))
+plot(t, taildeps(miami_u10, tampa_u10), xlab="Probability Treshold", ylab="Coefficient", ylim=c(0,1))
+plot(t, taildeps(miami_v10, tampa_v10), xlab="Probability Treshold", ylab="Coefficient", ylim=c(0,1))
+# absolute value of wind speed components
+plot(t, taildeps(abs(miami_u10), abs(tampa_u10)), xlab="Probability Treshold", ylab="Coefficient", ylim=c(0,1))
+plot(t, taildeps(abs(miami_v10), abs(tampa_v10)), xlab="Probability Treshold", ylab="Coefficient", ylim=c(0,1))
+# tp and u/v
+plot(t, taildeps(miami_tp, tallahassee_tp), xlab="Probability Treshold", ylab="Coefficient", ylim=c(0,1))
+
+
+# wind speed
+plot(t, taildeps(miami_speed, tampa_speed), xlab="Probability Treshold", ylab="Coefficient", ylim=c(0,1))
+plot(t, taildeps(talla_speed, tampa_speed), xlab="Probability Treshold", ylab="Coefficient", ylim=c(0,1))
+plot(t, taildeps(talla_speed, miami_speed), xlab="Probability Treshold", ylab="Coefficient", ylim=c(0,1))
