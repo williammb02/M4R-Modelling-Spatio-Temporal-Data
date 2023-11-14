@@ -74,20 +74,26 @@ plot(t, taildeps(tampa_u10, tampa_v10), xlab="Probability Treshold", ylab="Coeff
 plot(t, taildeps(tallahassee_u10, tallahassee_v10), xlab="Probability Treshold", ylab="Coefficient", ylim=c(0,1))
 
 # same component, different location
-plot(t, taildeps(miami_u10, tampa_u10), xlab="Probability Treshold", ylab="Coefficient", ylim=c(0,1))
+plot(t, taildeps(miami_u10, tampa_u10), xlab="Probability Treshold", ylab="Coefficient", 
+     ylim=c(0,1), main="Miami and Tampa u component")
 plot(t, taildeps(abs(miami_u10), abs(tampa_u10)), xlab="Probability Treshold", ylab="Coefficient", ylim=c(0,1))
-plot(t, taildeps(miami_v10, tampa_v10), xlab="Probability Treshold", ylab="Coefficient", ylim=c(0,1))
+plot(t, taildeps(miami_v10, tampa_v10), xlab="Probability Treshold", ylab="Coefficient", 
+     ylim=c(0,1), main="Miami and Tampa v component")
 plot(t, taildeps(abs(miami_v10), abs(tampa_v10)), xlab="Probability Treshold", ylab="Coefficient", ylim=c(0,1))
 # ones below are particularly notable, consider absolute
-plot(t, taildeps(tallahassee_u10, tampa_u10), xlab="Probability Treshold", ylab="Coefficient", ylim=c(0,1))
+plot(t, taildeps(tallahassee_u10, tampa_u10), xlab="Probability Treshold", ylab="Coefficient", 
+     ylim=c(0,1), main="Tallahassee and Tampa u component")
 plot(t, taildeps(abs(tallahassee_u10), abs(tampa_u10)), xlab="Probability Treshold", ylab="Coefficient", ylim=c(0,1))
-plot(t, taildeps(tallahassee_v10, tampa_v10), xlab="Probability Treshold", ylab="Coefficient", ylim=c(0,1))
+plot(t, taildeps(tallahassee_v10, tampa_v10), xlab="Probability Treshold", ylab="Coefficient", 
+     ylim=c(0,1), main="Tallahassee and Tampa v component")
 plot(t, taildeps(abs(tallahassee_v10), abs(tampa_v10)), xlab="Probability Treshold", ylab="Coefficient", ylim=c(0,1))
 
 # precipitation
 plot(t, taildeps(tallahassee_tp, tampa_tp), xlab="Probability Treshold", ylab="Coefficient", ylim=c(0,1))
 
 # wind speed
-plot(t, taildeps(miami_speed, tampa_speed), xlab="Probability Treshold", ylab="Coefficient", ylim=c(0,1))
-plot(t, taildeps(talla_speed, tampa_speed), xlab="Probability Treshold", ylab="Coefficient", ylim=c(0,1))
+plot(t, taildeps(miami_speed, tampa_speed), xlab="Probability Treshold", ylab="Coefficient", 
+     ylim=c(0,1), main="Miami and Tampa speed")
+plot(t, taildeps(talla_speed, tampa_speed), xlab="Probability Treshold", ylab="Coefficient", 
+     ylim=c(0,1), main="Tallahassee and Tampa speed")
 plot(t, taildeps(talla_speed, miami_speed), xlab="Probability Treshold", ylab="Coefficient", ylim=c(0,1))
