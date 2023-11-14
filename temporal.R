@@ -11,6 +11,19 @@ miami_v10 <- import_climate_data("v10", miami_index[1], miami_index[2])
 tampa_v10 <- import_climate_data("v10", tampa_index[1], tampa_index[2])
 tallahassee_v10 <- import_climate_data("v10", tallahassee_index[1], tallahassee_index[2])
 
+# key functions for stl analysis
+stl_dec <- function(var){
+  ts_var <- ts(var, frequency = 12)
+  var_trend <- stl(ts_var, s.window="periodic", t.window = length(var))
+  var_trend
+}
+
+stl_rem <- function(var){
+  ts_var <- ts(var, frequency = 12)
+  var_trend <- stl(ts_var, s.window="periodic", t.window = length(var))
+  var_trend$time.series[,3]
+}
+
 # create scatter plots for wind and precipitation at 3 locations in Florida
 par(mfrow = c(2,3))
 plot(miami_u10, miami_tp, main = "Miami", xlab="u10 (m s^-1)", ylab="Precipitation (m)")
@@ -35,9 +48,7 @@ acf(miami_tp, main = "Empirical Autocorrelation")
 
 # consider NYC total precipitation to see if trend differs
 nyc_tp <- import_climate_data("tp", nyc_index[1], nyc_index[2])
-ts_nyc_tp <- ts(nyc_tp, frequency = 12)
-nyc_stl <- stl(ts_nyc_tp, s.window = "periodic", t.window = length(ts_nyc_tp))
-plot(nyc_stl, main = "STL Decomposition of NYC Total Precipitation")
+plot(stl_dec(nyc_tp), main = "STL Decomposition of NYC Total Precipitation")
 
 nyc_remainder <- nyc_stl$time.series[,3]
 par(mfrow = c(1,3))
@@ -46,9 +57,7 @@ hist(nyc_remainder)
 plot(periodogram(as.vector(nyc_remainder)), type = "l")
 
 # stl decomposition of precipitation in miami
-ts_miami_tp <- ts(miami_tp, frequency = 12)
-miami_tp_trends <- stl(ts_miami_tp, s.window = "periodic", t.window = length(ts_miami_tp))
-plot(miami_tp_trends, main = "Additive STL Decomposition of Total Precipitation in Miami")
+plot(stl_dec(miami_tp), main = "Additive STL Decomposition of Total Precipitation in Miami")
 
 # exploratory plots for the remainder
 miami_tp_rem <- miami_tp_trends$time.series[,3]
@@ -80,24 +89,34 @@ pacf(abs(miami_tp_rem))
 pacf(miami_tp_rem^2)
 
 # try stl decomposition of total precipitation, under first differencing
-ts_miami_tp <- ts(diff(miami_tp), frequency = 12)
-miami_tp_trends <- stl(ts_miami_tp, s.window = "periodic", t.window = 12)
-plot(miami_tp_trends, main = "STL Decomposition of Precipitation in Miami, 1st Difference")
+plot(stl_dec(diff(miami_tp)), main = "STL Decomposition of Precipitation in Miami, 1st Difference")
 
 # stl decomposition of u10 wind
-ts_miami_u10 <- ts(miami_u10, frequency = 12)
-miami_u10_trends <- stl(ts_miami_u10, s.window = "periodic", t.window = length(miami_u10))
-plot(miami_u10_trends, main = "Additive STL Decomposition of u10 in Miami")
+plot(stl_dec(miami_u10), main = "Additive STL Decomposition of u10 in Miami")
 
 # stl decomposition of v10 wind
-ts_miami_v10 <- ts(miami_v10, frequency = 12)
-miami_v10_trends <- stl(ts_miami_v10, s.window = "periodic", t.window = length(miami_v10))
-plot(miami_v10_trends, main = "Additive STL Decomposition of v10 in Miami")
+plot(stl_dec(miami_v10), main = "Additive STL Decomposition of v10 in Miami")
+
+
+# consider features of decompositions
+feat_stl(miami_u10, .period=12, s.window = "periodic", t.window=length(miami_u10))
+feat_stl(miami_v10, .period=12, s.window = "periodic", t.window=length(miami_v10))
+feat_stl(miami_tp, .period=12, s.window = "periodic", t.window=length(miami_tp))
+
 
 # consider all remainders
-miami_tp_rem <- miami_tp_trends$time.series[, 3]
-miami_u10_rem <- miami_u10_trends$time.series[, 3]
-miami_v10_rem <- miami_v10_trends$time.series[, 3]
+miami_tp_rem <- stl_rem(miami_tp)
+miami_u10_rem <- stl_rem(miami_u10)
+miami_v10_rem <- stl_rem(miami_v10)
+
+tampa_tp_rem <- stl_rem(tampa_tp)
+tampa_u10_rem <- stl_rem(tampa_u10)
+tampa_v10_rem <- stl_rem(tampa_v10)
+
+talla_tp_rem <- stl_rem(tallahassee_tp)
+talla_u10_rem <- stl_rem(tallahassee_u10)
+talla_v10_rem <- stl_rem(tallahassee_v10)
+
 
 # fit ghyp distribution to remainders, and exploratory analysis
 miami_urem_ghyp <- stepAIC.ghyp(miami_u10_rem, silent = TRUE)
@@ -118,11 +137,6 @@ hist(miami_v10_rem, main = "Histogram")
 plot(periodogram(as.vector(miami_v10_rem)), type = "l", ylab = "", main = "Periodogram")
 qqnorm(miami_v10_rem, main = "Normal QQ Plot for v-component")
 qqline(miami_v10_rem, col = "red")
-
-# consider features of wind decompositions
-feat_stl(miami_u10, .period=12, s.window = "periodic", t.window=length(miami_u10))
-feat_stl(miami_v10, .period=12, s.window = "periodic", t.window=length(miami_v10))
-feat_stl(miami_tp, .period=12, s.window = "periodic", t.window=length(miami_tp))
 
 
 # correlation analysis
