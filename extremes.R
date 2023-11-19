@@ -78,8 +78,6 @@ plot(t, taildeps(talla_v10_rem, tampa_v10_rem), xlab="Probability Treshold", yla
      ylim=c(0,1), main="Tallahassee and Tampa v component remainder")
 
 
-
-
 # extremogram analysis
 # we need stationary time series to use the extremogram
 # use remainders from temporal.R
@@ -113,7 +111,6 @@ extremogram2(cbind(tampa_u10_rem, tampa_tp_rem), 0.95, 0.95, 100, 1)
 # nice extremal dependence
 extremogram2(cbind(miami_u10, miami_v10), 0.05, 0.95, 100, 3)
 
-
 extremogram1(miami_u10, 0.95, 100, 1)
 extremogram1(miami_u10, 0.05, 100, 2)
 # stronger pattern in v, good extremal dependence
@@ -126,4 +123,7 @@ extremogram2(tt_s, 0.95, 0.95, 100, 1)
 # not as extreme
 extremogram2(mth_s, 0.95, 0.95, 100, 1)
 extremogram2(mtp_s, 0.95, 0.95, 100, 1)
+
+# apply remainder to wind speeds
+# also consider sqrt(u_rem^2 + v_rem^2)
 
