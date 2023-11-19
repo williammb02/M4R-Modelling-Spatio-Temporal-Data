@@ -14,6 +14,9 @@ miami_speed <- sqrt(miami_u10^2 + miami_v10^2)
 tampa_speed <- sqrt(tampa_u10^2 + tampa_v10^2)
 talla_speed <- sqrt(tallahassee_u10^2 + tallahassee_v10^2)
 
+mtp_s <- cbind(miami_speed, tampa_speed)
+mth_s <- cbind(miami_speed, talla_speed)
+tt_s <- cbind(tampa_speed, talla_speed)
 
 # tail dependence coefficients
 taildeps <- function(x, y){
@@ -58,42 +61,69 @@ plot(t, taildeps(talla_speed, tampa_speed), xlab="Probability Treshold", ylab="C
 plot(t, taildeps(talla_speed, miami_speed), xlab="Probability Treshold", ylab="Coefficient", ylim=c(0,1))
 
 
-# TAIL DEPENDENCE WITH NEGATIVE VERSION OF U
-# TAIL DEPENDENCE WITH REMAINDERS OF TIME SERIES
+# negative version of u for miami
+# completely independent
+plot(t, taildeps(-miami_u10, miami_v10), xlab="Probability Treshold", ylab="Coefficient", 
+     ylim=c(0,1), main="Miami -u and v component")
+
+# remainders of time series
+plot(t, taildeps(miami_u10_rem, tampa_u10_rem), xlab="Probability Treshold", ylab="Coefficient", 
+     ylim=c(0,1), main="Miami and Tampa u component remainder")
+plot(t, taildeps(miami_v10_rem, tampa_v10_rem), xlab="Probability Treshold", ylab="Coefficient", 
+     ylim=c(0,1), main="Miami and Tampa v component remainder")
+# ones below are particularly notable, consider absolute
+plot(t, taildeps(talla_u10_rem, tampa_u10_rem), xlab="Probability Treshold", ylab="Coefficient", 
+     ylim=c(0,1), main="Tallahassee and Tampa u component remainder")
+plot(t, taildeps(talla_v10_rem, tampa_v10_rem), xlab="Probability Treshold", ylab="Coefficient", 
+     ylim=c(0,1), main="Tallahassee and Tampa v component remainder")
+
+
+
 
 # extremogram analysis
 # we need stationary time series to use the extremogram
 # use remainders from temporal.R
 
+
 extremogram2(cbind(miami_u10_rem, miami_v10_rem), 0.95, 0.95, 100, 1)
-extremogram2(cbind(miami_u10_rem, tampa_u10_rem), 0.95, 0.95, 100, 1)
-extremogram2(cbind(miami_u10_rem, miami_tp_rem), 0.95, 0.95, 100, 1)
+extremogram2(cbind(tampa_u10_rem, tampa_v10_rem), 0.95, 0.95, 100, 1)
+extremogram2(cbind(talla_u10_rem, talla_v10_rem), 0.95, 0.95, 100, 1)
+
+extremogram2(cbind(miami_u10_rem, miami_v10_rem), 0.05, 0.05, 100, 2)
+extremogram2(cbind(tampa_u10_rem, tampa_v10_rem), 0.05, 0.05, 100, 2)
+extremogram2(cbind(talla_u10_rem, talla_v10_rem), 0.05, 0.05, 100, 2)
+
+extremogram2(cbind(tampa_v10_rem, tampa_tp_rem), 0.95, 0.95, 100, 1)
+extremogram2(cbind(talla_v10_rem, talla_tp_rem), 0.95, 0.95, 100, 1)
+extremogram2(cbind(miami_v10_rem, miami_tp_rem), 0.95, 0.95, 100, 1)
+
+extremogram2(cbind(tampa_v10_rem, tampa_tp_rem), 0.05, 0.05, 100, 2)
+extremogram2(cbind(talla_v10_rem, talla_tp_rem), 0.05, 0.05, 100, 2)
+extremogram2(cbind(miami_v10_rem, miami_tp_rem), 0.05, 0.05, 100, 2)
+
+extremogram2(cbind(tampa_v10_rem, talla_v10_rem), 0.95, 0.95, 100, 1)
 
 
+# most 'extreme' ones
+extremogram2(cbind(tampa_v10, tampa_tp), 0.95, 0.95, 100, 1)
+extremogram2(cbind(tampa_v10_rem, tampa_tp_rem), 0.95, 0.95, 100, 1)
+extremogram2(cbind(tampa_u10, tampa_tp), 0.95, 0.95, 100, 1)
+extremogram2(cbind(tampa_u10_rem, tampa_tp_rem), 0.95, 0.95, 100, 1)
 
-
-uvm <- cbind(miami_u10, miami_v10)
-utm <- cbind(miami_u10, miami_tp)
-t_mt <- cbind(miami_tp, tampa_tp)
-mtp_s <- cbind(miami_speed, tampa_speed)
-mth_s <- cbind(miami_speed, talla_speed)
-tt_s <- cbind(tampa_speed, talla_speed)
 # nice extremal dependence
-extremogram2(uvm, 0.95, 0.05, 100, 4)
-extremogram2(utm, 0.95, 0.95, 100, 1)
-extremogram2(utm, 0.95, 0.05, 100, 4)
-extremogram2(t_mt, 0.95, 0.95, 100, 1)
-extremogram2(t_mt, 0.05, 0.05, 100, 2)
-extremogram2(t_mt, 0.05, 0.95, 100, 3)
-extremogram2(t_mt, 0.95, 0.05, 100, 4)
+extremogram2(cbind(miami_u10, miami_v10), 0.05, 0.95, 100, 3)
+
 
 extremogram1(miami_u10, 0.95, 100, 1)
 extremogram1(miami_u10, 0.05, 100, 2)
-# stronger pattern in v
+# stronger pattern in v, good extremal dependence
 extremogram1(miami_v10, 0.95, 100, 1)
 extremogram1(miami_v10, 0.05, 100, 2)
 
+
 # one below is very interesting
 extremogram2(tt_s, 0.95, 0.95, 100, 1)
-extremogram2(tt_s, 0.05, 0.05, 100, 2)
+# not as extreme
+extremogram2(mth_s, 0.95, 0.95, 100, 1)
+extremogram2(mtp_s, 0.95, 0.95, 100, 1)
 
