@@ -14,9 +14,9 @@ miami_speed <- sqrt(miami_u10^2 + miami_v10^2)
 tampa_speed <- sqrt(tampa_u10^2 + tampa_v10^2)
 talla_speed <- sqrt(tallahassee_u10^2 + tallahassee_v10^2)
 
-mtp_s <- cbind(miami_speed, tampa_speed)
-mth_s <- cbind(miami_speed, talla_speed)
-tt_s <- cbind(tampa_speed, talla_speed)
+miami_w_rem <- stl_rem(miami_speed)
+tampa_w_rem <- stl_rem(tampa_speed)
+talla_w_rem <- stl_rem(talla_speed)
 
 # tail dependence coefficients
 taildeps <- function(x, y){
@@ -119,10 +119,11 @@ extremogram1(miami_v10, 0.05, 100, 2)
 
 
 # one below is very interesting
-extremogram2(tt_s, 0.95, 0.95, 100, 1)
+extremogram2(cbind(tampa_speed, talla_speed), 0.95, 0.95, 100, 1)
+extremogram2(cbind(tampa_w_rem, talla_w_rem), 0.95, 0.95, 100, 1)
 # not as extreme
-extremogram2(mth_s, 0.95, 0.95, 100, 1)
-extremogram2(mtp_s, 0.95, 0.95, 100, 1)
+extremogram2(cbind(miami_speed, talla_speed), 0.95, 0.95, 100, 1)
+extremogram2(cbind(miami_speed, tampa_speed), 0.95, 0.95, 100, 1)
 
 # apply remainder to wind speeds
 # also consider sqrt(u_rem^2 + v_rem^2)
