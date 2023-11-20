@@ -108,6 +108,9 @@ extremogram2(cbind(tampa_v10_rem, tampa_tp_rem), 0.95, 0.95, 100, 1)
 extremogram2(cbind(tampa_u10, tampa_tp), 0.95, 0.95, 100, 1)
 extremogram2(cbind(tampa_u10_rem, tampa_tp_rem), 0.95, 0.95, 100, 1)
 
+extremogram2(cbind(tampa_tp, tampa_u10), 0.95, 0.95, 100, 1)
+extremogram2(cbind(tampa_tp_rem, tampa_u10_rem), 0.95, 0.95, 100, 1)
+
 # nice extremal dependence
 extremogram2(cbind(miami_u10, miami_v10), 0.05, 0.95, 100, 3)
 
@@ -121,9 +124,12 @@ extremogram1(miami_v10, 0.05, 100, 2)
 # one below is very interesting
 extremogram2(cbind(tampa_speed, talla_speed), 0.95, 0.95, 100, 1)
 extremogram2(cbind(tampa_w_rem, talla_w_rem), 0.95, 0.95, 100, 1)
+
+extremogram2(cbind(talla_speed, tampa_speed), 0.95, 0.95, 100, 1)
+extremogram2(cbind(talla_w_rem, tampa_w_rem), 0.95, 0.95, 100, 1)
 # not as extreme
-extremogram2(cbind(miami_speed, talla_speed), 0.95, 0.95, 100, 1)
-extremogram2(cbind(miami_speed, tampa_speed), 0.95, 0.95, 100, 1)
+extremogram2(cbind(talla_w_rem, miami_w_rem), 0.95, 0.95, 100, 1)
+extremogram2(cbind(tampa_w_rem, miami_w_rem), 0.95, 0.95, 100, 1)
 
 # apply remainder to wind speeds
 # also consider sqrt(u_rem^2 + v_rem^2)
