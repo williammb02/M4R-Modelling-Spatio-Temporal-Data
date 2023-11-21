@@ -152,8 +152,18 @@ qqline(miami_v10_rem, col = "red")
 
 
 # consider hourly data analysis
-hist(stl_rem_hourly(miami_tp_2023), breaks=100, freq=FALSE)
-lines(density(stl_rem_hourly(miami_tp_2023)), col="blue")
+hourly_miami_tp <- stl_rem_hourly(miami_tp_2023)
+hourly_miami_u <- stl_rem_hourly(miami_u10_2023)
+hourly_miami_v <- stl_rem_hourly(miami_v10_2023)
+
+hist(hourly_miami_tp, breaks=100, freq=FALSE)
+lines(density(hourly_miami_tp), col="blue")
+
+hist(hourly_miami_u, breaks=100, freq=FALSE)
+lines(density(hourly_miami_u), col="blue")
+
+hist(hourly_miami_v, breaks=100, freq=FALSE)
+lines(density(hourly_miami_v), col="blue")
 
 
 
