@@ -93,6 +93,7 @@ extremogram2(cbind(tampa_tp_rem, tampa_u10_rem), 0.95, 0.95, 100, 1)
 
 # nice extremal dependence
 extremogram2(cbind(miami_u10, miami_v10), 0.05, 0.95, 100, 3)
+extremogram2(cbind(miami_u10_rem, miami_v10_rem), 0.95, 0.95, 300, 1)
 
 extremogram1(miami_u10, 0.95, 100, 1)
 extremogram1(miami_u10, 0.05, 100, 2)
@@ -119,11 +120,41 @@ hourly_miami_tp <- stl_rem_hourly(miami_tp_2023)
 hourly_miami_u <- stl_rem_hourly(miami_u10_2023)
 hourly_miami_v <- stl_rem_hourly(miami_v10_2023)
 
-extremogram2(cbind(hourly_miami_tp, hourly_miami_u), 0.95, 0.95, 100, 1)
-extremogram2(cbind(hourly_miami_u, hourly_miami_tp), 0.95, 0.95, 100, 1)
-extremogram2(cbind(hourly_miami_v, hourly_miami_u), 0.95, 0.95, 100, 1)
-extremogram2(cbind(hourly_miami_u, hourly_miami_v), 0.95, 0.95, 100, 1)
+hourly_tampa_tp <- stl_rem_hourly(tampa_tp_2023)
+hourly_tampa_u <- stl_rem_hourly(tampa_u10_2023)
+hourly_tampa_v <- stl_rem_hourly(tampa_v10_2023)
 
+hourly_talla_tp <- stl_rem_hourly(talla_tp_2023)
+hourly_talla_u <- stl_rem_hourly(talla_u10_2023)
+hourly_talla_v <- stl_rem_hourly(talla_v10_2023)
 
+miami_w_2023 <- sqrt(miami_u10_2023^2 + miami_v10_2023^2)
+tampa_w_2023 <- sqrt(tampa_u10_2023^2 + tampa_v10_2023^2)
+talla_w_2023 <- sqrt(talla_u10_2023^2 + talla_v10_2023^2)
 
+hourly_miami_w <- stl_rem_hourly(miami_w_2023)
+hourly_tampa_w <- stl_rem_hourly(tampa_w_2023)
+hourly_talla_w <- stl_rem_hourly(talla_w_2023)
 
+# tail dependence coefficients
+plot(t2, taildeps(t2, hourly_miami_u, hourly_tampa_u), xlab="Probability Treshold", ylab="Coefficient", 
+     ylim=c(0,1), main="Miami and Tampa u component remainder", type="l")
+plot(t2, taildeps(t2, hourly_miami_tp, hourly_tampa_tp), xlab="Probability Treshold", ylab="Coefficient", 
+     ylim=c(0,1), main="Miami and Tampa precipitation remainder", type="l")
+plot(t2, taildeps(t2, hourly_tampa_w, hourly_miami_w), xlab="Probability Treshold", ylab="Coefficient", 
+     ylim=c(0,1), main="Miami and Tampa wind speed remainder", type="l")
+
+plot(t2, taildeps(t2, miami_u10_2023, tampa_u10_2023), xlab="Probability Treshold", ylab="Coefficient", 
+     ylim=c(0,1), main="Miami and Tampa u component", type="l")
+plot(t2, taildeps(t2, miami_tp_2023, tampa_tp_2023), xlab="Probability Treshold", ylab="Coefficient", 
+     ylim=c(0,1), main="Miami and Tampa precipitation", type="l")
+plot(t2, taildeps(t2, miami_w_2023, tampa_w_2023), xlab="Probability Treshold", ylab="Coefficient", 
+     ylim=c(0,1), main="Miami and Tampa wind speed", type="l")
+
+# more insight that monthly
+extremogram2(cbind(hourly_miami_tp, hourly_tampa_tp), 0.95, 0.95, 100, 1)
+extremogram2(cbind(hourly_tampa_tp, hourly_miami_tp), 0.95, 0.95, 100, 1)
+extremogram2(cbind(hourly_miami_v, hourly_miami_u), 0.95, 0.95, 300, 1)
+extremogram2(cbind(hourly_miami_u, hourly_miami_v), 0.95, 0.95, 300, 1)
+
+extremogram2(cbind(hourly_miami_w, hourly_tampa_w), 0.95, 0.95, 300, 1)
