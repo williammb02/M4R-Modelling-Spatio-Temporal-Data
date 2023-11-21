@@ -18,8 +18,20 @@ stl_dec <- function(var){
   var_trend
 }
 
+stl_dec_hourly <- function(var){
+  ts_var <- ts(var, frequency = 24*30)
+  var_trend <- stl(ts_var, s.window="periodic", t.window = length(var))
+  var_trend
+}
+
 stl_rem <- function(var){
   ts_var <- ts(var, frequency = 12)
+  var_trend <- stl(ts_var, s.window="periodic", t.window = length(var))
+  var_trend$time.series[,3]
+}
+
+stl_rem_hourly <- function(var){
+  ts_var <- ts(var, frequency = 24*30)
   var_trend <- stl(ts_var, s.window="periodic", t.window = length(var))
   var_trend$time.series[,3]
 }
@@ -137,6 +149,12 @@ hist(miami_v10_rem, main = "Histogram")
 plot(periodogram(as.vector(miami_v10_rem)), type = "l", ylab = "", main = "Periodogram")
 qqnorm(miami_v10_rem, main = "Normal QQ Plot for v-component")
 qqline(miami_v10_rem, col = "red")
+
+
+# consider hourly data analysis
+hist(stl_rem_hourly(miami_tp_2023), breaks=100, freq=FALSE)
+lines(density(stl_rem_hourly(miami_tp_2023)), col="blue")
+
 
 
 # correlation analysis

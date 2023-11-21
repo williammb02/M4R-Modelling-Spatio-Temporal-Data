@@ -72,3 +72,11 @@ miami_index <- city_coord_index(25.8, -80.2)
 tampa_index <- city_coord_index(28.0, -82.5)
 tallahassee_index <- city_coord_index(30.4, -84.2)
 
+
+# read in new hourly data
+miami_tp_2023_nc <- nc_open('miami_tp_2023.nc')
+
+before_miami_tp_2023 <- nc.get.var.subset.by.axes(miami_tp_2023_nc, "tp", axis.indices=list(X=1,Y=1))
+miami_tp_2023 <- as.vector(before_miami_tp_2023)
+
+
