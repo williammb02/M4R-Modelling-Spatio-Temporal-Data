@@ -82,4 +82,19 @@ miami_tp_2023 <- as.vector(nc.get.var.subset.by.axes(miami_tp_2023_nc, "tp", axi
 miami_u10_2023 <- as.vector(nc.get.var.subset.by.axes(miami_u10_2023_nc, "u10", axis.indices=list(X=1,Y=1)))
 miami_v10_2023 <- as.vector(nc.get.var.subset.by.axes(miami_v10_2023_nc, "v10", axis.indices=list(X=1,Y=1)))
 
+tampa_tp_2023_nc <- nc_open('tampa_tp_2023.nc')
+tampa_u10_2023_nc <- nc_open('tampa_u10_2023.nc')
+tampa_v10_2023_nc <- nc_open('tampa_v10_2023.nc')
+
+tampa_tp_2023 <- as.vector(nc.get.var.subset.by.axes(tampa_tp_2023_nc, "tp", axis.indices=list(X=1,Y=1)))
+tampa_u10_2023 <- as.vector(nc.get.var.subset.by.axes(tampa_u10_2023_nc, "u10", axis.indices=list(X=1,Y=1)))
+tampa_v10_2023 <- as.vector(nc.get.var.subset.by.axes(tampa_v10_2023_nc, "v10", axis.indices=list(X=1,Y=1)))
+
+talla_tp_2023_nc <- nc_open('talla_tp_2023.nc')
+talla_u10_2023_nc <- nc_open('talla_u10_2023.nc')
+talla_v10_2023_nc <- nc_open('talla_v10_2023.nc')
+
+talla_tp_2023 <- as.vector(nc.get.var.subset.by.axes(talla_tp_2023_nc, "tp", axis.indices=list(X=1,Y=1)))
+talla_u10_2023 <- as.vector(nc.get.var.subset.by.axes(talla_u10_2023_nc, "u10", axis.indices=list(X=1,Y=1)))
+talla_v10_2023 <- as.vector(nc.get.var.subset.by.axes(talla_v10_2023_nc, "v10", axis.indices=list(X=1,Y=1)))
 
