@@ -115,3 +115,19 @@ extremogram2(cbind(hourly_talla_w, hourly_miami_w), 0.95, 0.95, 300, 1)
 extremogram2(cbind(hourly_tampa_w, hourly_miami_w), 0.95, 0.95, 300, 1)
 extremogram2(cbind(hourly_tampa_w, hourly_talla_w), 0.95, 0.95, 300, 1)
 extremogram2(cbind(hourly_miami_w, hourly_talla_w), 0.95, 0.95, 300, 1)
+
+
+
+extremogram2(cbind(hourly_miami_tp, hourly_tampa_tp), 0.9, 0.9, 300, 1)
+extremogram2(cbind(hourly_tampa_tp, hourly_miami_tp), 0.9, 0.9, 300, 1)
+extremogram2(cbind(hourly_miami_v, hourly_miami_u), 0.9, 0.9, 300, 1)
+extremogram2(cbind(hourly_miami_u, hourly_miami_v), 0.9, 0.9, 300, 1)
+
+extremogram2(cbind(hourly_miami_w, hourly_tampa_w), 0.9, 0.9, 300, 1)
+extremogram2(cbind(hourly_talla_w, hourly_tampa_w), 0.9, 0.9, 300, 1)
+extremogram2(cbind(hourly_talla_w, hourly_miami_w), 0.9, 0.9, 300, 1)
+
+extremogram2(cbind(hourly_tampa_w, hourly_miami_w), 0.9, 0.9, 300, 1)
+extremogram2(cbind(hourly_tampa_w, hourly_talla_w), 0.9, 0.9, 300, 1)
+extremogram2(cbind(hourly_miami_w, hourly_talla_w), 0.9, 0.9, 300, 1)
+
