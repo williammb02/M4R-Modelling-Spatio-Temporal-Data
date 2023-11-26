@@ -74,6 +74,32 @@ plot(t2, taildeps(t2, miami_tp_2023, tampa_tp_2023), xlab="Probability Treshold"
 plot(t2, taildeps(t2, miami_w_2023, tampa_w_2023), xlab="Probability Treshold", ylab="Coefficient", 
      ylim=c(0,1), main="Miami and Tampa wind speed", type="l")
 
+
+# testing tail dependence against tail independence
+# look for between 10-15% exceedance rate
+# p value low means independent, p value high means dependent
+
+# wind components
+taildep.test(miami_u10_2023, miami_v10_2023, cthresh = -0.50)
+taildep.test(miami_u10_2023, miami_v10_2023, cthresh = -0.42)
+
+taildep.test(miami_u10_2023, tampa_u10_2023, cthresh = -0.40)
+taildep.test(miami_u10_2023, tampa_u10_2023, cthresh = -0.32)
+
+taildep.test(miami_v10_2023, tampa_v10_2023, cthresh = -0.38)
+taildep.test(miami_v10_2023, tampa_v10_2023, cthresh = -0.26)
+
+# wind speed
+taildep.test(miami_w_2023, tampa_w_2023, cthresh = -0.34)
+taildep.test(miami_w_2023, talla_w_2023, cthresh = -0.37)
+taildep.test(tampa_w_2023, talla_w_2023, cthresh = -0.28)
+
+
+# wind speed and total precipitation
+taildep.test(hourly_miami_v, hourly_tampa_v, cthresh = -0.26)
+
+
+# extremogram analysis
 # more insight that monthly
 extremogram2(cbind(hourly_miami_tp, hourly_tampa_tp), 0.95, 0.95, 300, 1)
 extremogram2(cbind(hourly_tampa_tp, hourly_miami_tp), 0.95, 0.95, 300, 1)
