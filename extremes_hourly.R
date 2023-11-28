@@ -94,9 +94,9 @@ taildep.test(miami_w_2023, tampa_w_2023, cthresh = -0.34)
 taildep.test(miami_w_2023, talla_w_2023, cthresh = -0.37)
 taildep.test(tampa_w_2023, talla_w_2023, cthresh = -0.28)
 
-
-# wind speed and total precipitation
-taildep.test(hourly_miami_v, hourly_tampa_v, cthresh = -0.26)
+# remainders
+taildep.test(hourly_miami_v, hourly_tampa_v, cthresh = -0.27)
+taildep.test(hourly_miami_w, hourly_tampa_w, cthresh = -0.33)
 
 
 # extremogram analysis
