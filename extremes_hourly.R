@@ -72,7 +72,7 @@ plot(t2, taildeps(t2, miami_u10_2023, tampa_u10_2023), xlab="Probability Treshol
 plot(t2, taildeps(t2, miami_tp_2023, tampa_tp_2023), xlab="Probability Treshold", ylab="Coefficient", 
      ylim=c(0,1), main="Miami and Tampa precipitation", type="l")
 plot(t2, taildeps(t2, miami_w_2023, tampa_w_2023), xlab="Probability Treshold", ylab="Coefficient", 
-     ylim=c(0,1), main="Miami and Tampa wind speed", type="l")
+     ylim=c(0,1), main="Tail Dependence Parameters for Miami and Tampa Wind Speed", type="l")
 
 
 # testing tail dependence against tail independence
