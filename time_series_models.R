@@ -8,7 +8,7 @@ create_formula <- function(key_freqs) {
   if (length(key_freqs)%%2 == 0){
     k <- length(key_freqs)/2 + 1
   } else {
-    k <- round(length(key_freqs), 0)
+    k <- round(length(key_freqs)/2, 0)
   }
   
   for (i in k:length(key_freqs)) {
@@ -33,15 +33,15 @@ plot(miami_w_2023, type="l", main="Cubic Trend")
 lines(polyfit$fitted.values, col="red")
 
 z <- miami_w_2023 - polyfit$fitted.values
-plot(freq, periodogram(z), type="l")
+plot(freq, my_periodogram(z), type="l")
 
 # identify key periods in the data 
 key_freqs <- c()
 powers <- c()
-for(i in 1:length(periodogram(z))){
-  if(periodogram(z)[i] > 135){
+for(i in 1:length(my_periodogram(z))){
+  if(my_periodogram(z)[i] > 135){
     key_freqs <- c(key_freqs, freq[i])
-    powers <- c(powers, periodogram(z)[i])
+    powers <- c(powers, my_periodogram(z)[i])
   }
 }
 
@@ -60,10 +60,10 @@ acf(y)
 # try with new threshold
 key_freqs2 <- c()
 powers2 <- c()
-for(i in 1:length(periodogram(z))){
-  if(periodogram(z)[i] > 10){
+for(i in 1:length(my_periodogram(z))){
+  if(my_periodogram(z)[i] > 10){
     key_freqs2 <- c(key_freqs2, freq[i])
-    powers2 <- c(powers2, periodogram(z)[i])
+    powers2 <- c(powers2, my_periodogram(z)[i])
   }
 }
 
@@ -85,13 +85,13 @@ quadfit <- lm(miami_w_2023 ~ poly(t, 2, raw=TRUE))
 plot(miami_w_2023, type="l", main="Quadratic Trend")
 lines(quadfit$fitted.values, col="red")
 z <- miami_w_2023 - quadfit$fitted.values
-plot(freq, periodogram(z), type="l")
+plot(freq, my_periodogram(z), type="l")
 key_freqs3 <- c()
 powers3 <- c()
-for(i in 1:length(periodogram(z))){
-  if(periodogram(z)[i] > 10){
+for(i in 1:length(my_periodogram(z))){
+  if(my_periodogram(z)[i] > 10){
     key_freqs3 <- c(key_freqs3, freq[i])
-    powers3 <- c(powers3, periodogram(z)[i])
+    powers3 <- c(powers3, my_periodogram(z)[i])
   }
 }
 seasonqfit <- lm(create_formula(key_freqs3))
@@ -105,49 +105,42 @@ lines(density(y3), col="red")
 qqnorm(y3, main="QQ Plot")
 acf(y3)
 
-
-# linear trend
-linearfit <- lm(miami_w_2023 ~ poly(t, 1, raw=TRUE))
-plot(miami_w_2023, type="l", main="Linear Trend")
-lines(linearfit$fitted.values, col="red")
-z <- miami_w_2023 - linearfit$fitted.values
-plot(freq, periodogram(z), type="l")
+# smooth periodogram
+# does not create a good fit
+spz <- smooth.periodogram(z)
+spz_vals <- spz$smooth.periodogram
+spz_freq <- spz$lambda
 key_freqs4 <- c()
-for(i in 1:length(periodogram(z))){
-  if(periodogram(z)[i] > 10){
-    key_freqs4 <- c(key_freqs4, freq[i])
+for(i in 1:length(spz_vals)){
+  if(spz_vals[i] > 2){
+    key_freqs4 <- c(key_freqs4, spz_freq[i])
   }
 }
-seasonlfit <- lm(create_formula(key_freqs4))
-plot(z, type="l", main="Linear Trend with Seasonal Component of 298 Key Frequencies")
-lines(seasonlfit$fitted.values, col="red")
-y4 <- z - seasonlfit$fitted.values
+seasonqfit2 <- lm(create_formula(key_freqs4))
+plot(z, type="l", main="Quadratic Trend with Seasonal Component of 129 Key Frequencies")
+lines(seasonqfit2$fitted.values, col="red")
+y4 <- z - seasonqfit2$fitted.values
 par(mfrow = c(2,2))
-plot(y4, type="l", main="Remainder with Linear Trend, 298 Frequencies")
+plot(y4, type="l", main="Remainder with Quadratic Trend, 129 Frequencies")
 hist(y4, breaks=100, freq=FALSE, main="Histogram")
 lines(density(y4), col="red")
 qqnorm(y4, main="QQ Plot")
 acf(y4)
 
 
-par(mfrow = c(1,3))
-acf(y2)
-acf(y3)
-acf(y4)
-
 # try differencing?
 freq <- seq(from = -0.5, to = 0.5, length = length(diff(miami_w_2023)))
 
 plot(diff(miami_w_2023), type="l")
 pacf(diff(miami_w_2023), lag.max = 1000)
-plot(freq, periodogram(diff(miami_w_2023)), type="l")
+plot(freq, my_periodogram(diff(miami_w_2023)), type="l")
 
 key_freqs <- c()
 powers <- c()
-for(i in 1:length(periodogram(diff(miami_w_2023)))){
-  if(periodogram(diff(miami_w_2023))[i] > 2){
+for(i in 1:length(my_periodogram(diff(miami_w_2023)))){
+  if(my_periodogram(diff(miami_w_2023))[i] > 2){
     key_freqs <- c(key_freqs, freq[i])
-    powers <- c(powers, periodogram(diff(miami_w_2023))[i])
+    powers <- c(powers, my_periodogram(diff(miami_w_2023))[i])
   }
 }
 key_periods = 1/key_freqs

@@ -57,7 +57,7 @@ time_index <- function(t){
 }
 
 # create a function that returns a temporal periodogram of a time series
-periodogram <- function(x){
+my_periodogram <- function(x){
   N <- length(x)
   S <- (1/N)*abs(fft(x - mean(x)))^2
   fftshift(S)
