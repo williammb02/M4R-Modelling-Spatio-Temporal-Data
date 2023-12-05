@@ -52,7 +52,7 @@ qqnorm(y, main="QQ Plot")
 acf(y)
 
 # fit arima model to y
-y_model <- auto.arima(y, ic = "aicc")
+y_model <- auto.arima(y, ic = "aic")
 
 
 # tampa wind speed
@@ -81,4 +81,4 @@ qqnorm(y2, main="QQ Plot")
 acf(y2)
 
 # fit arima model to y2
-y2_model <- auto.arima(y2, ic = "aicc")
+y2_model <- auto.arima(y2, ic = "aic")
