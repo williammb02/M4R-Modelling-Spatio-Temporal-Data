@@ -54,7 +54,6 @@ acf(y)
 # fit arima model to y
 y_model <- auto.arima(y, ic = "aic")
 
-
 # tampa wind speed
 # quadratic
 quadfit2 <- lm(tampa_w_2023 ~ poly(t, 2, raw=TRUE))
