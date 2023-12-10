@@ -98,3 +98,15 @@ qqnorm(y2, main="QQ Plot")
 acf(y2)
 
 
+# fit mvn distribution to residuals
+res_mvn <- mvn("XXX", cbind(y_model$residuals, y2_model$residuals))
+
+# fit ghyp distribution to residuals
+res_ghyp <- stepAIC.ghyp(cbind(y_model$residuals, y2_model$residuals), silent = TRUE)
+
+res1_ghyp <- stepAIC.ghyp(y_model$residuals, silent=TRUE)
+res2_ghyp <- stepAIC.ghyp(y2_model$residuals, silent=TRUE)
+
+# ljung box test
+checkresiduals(y_model)
+checkresiduals(y2_model)
