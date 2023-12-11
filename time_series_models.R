@@ -42,7 +42,9 @@ y <- z - seasonqfit$fitted.values
 # fit arima model to y
 y_model <- auto.arima(y, ic = "aicc")
 # fit arma garch model to y 
-y_garch <- ugarchfit(spec = ugarchspec(), data = y)
+yspec <- ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,1)), 
+                    mean.model=list(armaOrder = c(1, 4), include.mean=TRUE))
+y_garch <- ugarchfit(spec = yspec, data = y)
 
 
 # plots
