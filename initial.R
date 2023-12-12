@@ -25,6 +25,7 @@ library(extremogram)
 library(mixR)
 library(extRemes)
 library(rugarch)
+library(vars)
 
 # read in the data
 climate_data <- nc_open('m4rdata.nc')

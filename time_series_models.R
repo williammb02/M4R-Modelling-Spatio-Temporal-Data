@@ -43,9 +43,9 @@ y <- z - seasonqfit$fitted.values
 y_model <- auto.arima(y, ic = "aicc")
 # fit arma garch model to y 
 yspec <- ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,1)), 
-                    mean.model=list(armaOrder = c(1, 4), include.mean=TRUE))
+                    mean.model=list(armaOrder = c(1, 1), include.mean=TRUE))
 y_garch <- ugarchfit(spec = yspec, data = y)
-
+y_garch@fit$solver$sol$pars
 
 # plots
 plot(miami_w_2023, type="l", main="Quadratic Trend")
@@ -81,7 +81,10 @@ y2 <- z2 - seasonqfit2$fitted.values
 # fit arima model to y2
 y2_model <- auto.arima(y2, ic = "aicc")
 
-y2_garch <- ugarchfit(spec = ugarchspec(), data = y2)
+y2spec <- ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,1)), 
+                    mean.model=list(armaOrder = c(1, 1), include.mean=TRUE))
+y2_garch <- ugarchfit(spec = y2spec, data = y2)
+y2_garch@fit$solver$sol$pars
 
 # plots
 plot(tampa_w_2023, type="l", main="Quadratic Trend")
@@ -112,3 +115,15 @@ res2_ghyp <- stepAIC.ghyp(y2_model$residuals, silent=TRUE)
 # ljung box test
 checkresiduals(y_model)
 checkresiduals(y2_model)
+
+
+
+# VAR model
+ys_var <- VAR(cbind(y, y2), p=1, type="none")
+
+y_var_res <- ys_var$varresult$y$residuals
+y2_var_res <- ys_var$varresult$y2$residuals
+
+
+var_res_mvn <- mvn("XXX", cbind(y_var_res, y2_var_res))
+var_res_ghyp <- stepAIC.ghyp(cbind(y_var_res, y2_var_res), silent=TRUE)
