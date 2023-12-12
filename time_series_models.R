@@ -25,7 +25,7 @@ freq <- seq(from = -0.5, to = 0.5, length = length(miami_w_2023))
 # aim for an additive model
 
 # fit the trend
-acf(miami_w_2023)
+# acf(miami_w_2023)
 
 # quadratic
 quadfit <- lm(miami_w_2023 ~ poly(t, 2, raw=TRUE))
@@ -43,9 +43,10 @@ y <- z - seasonqfit$fitted.values
 y_model <- auto.arima(y, ic = "aicc")
 # fit arma garch model to y 
 yspec <- ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,1)), 
-                    mean.model=list(armaOrder = c(1, 1), include.mean=TRUE))
+                    mean.model=list(armaOrder = c(1, 4), include.mean=TRUE))
 y_garch <- ugarchfit(spec = yspec, data = y)
 y_garch@fit$solver$sol$pars
+y_gar_res <- residuals(y_garch)
 
 # plots
 plot(miami_w_2023, type="l", main="Quadratic Trend")
@@ -82,7 +83,7 @@ y2 <- z2 - seasonqfit2$fitted.values
 y2_model <- auto.arima(y2, ic = "aicc")
 
 y2spec <- ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,1)), 
-                    mean.model=list(armaOrder = c(1, 1), include.mean=TRUE))
+                    mean.model=list(armaOrder = c(5, 2), include.mean=TRUE))
 y2_garch <- ugarchfit(spec = y2spec, data = y2)
 y2_garch@fit$solver$sol$pars
 
