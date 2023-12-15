@@ -44,9 +44,9 @@ y_model <- auto.arima(y, ic = "aicc")
 # fit arma garch model to y 
 yspec <- ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,1)), 
                     mean.model=list(armaOrder = c(1, 4), include.mean=TRUE))
-y_garch <- ugarchfit(spec = yspec, data = y)
-y_garch@fit$solver$sol$pars
-y_gar_res <- residuals(y_garch)
+y_garch <- ugarchfit(spec = yspec, data = y, solver="hybrid")
+y_garch@fit$coef
+y_gar_res <- y_garch@fit$res
 
 # plots
 plot(miami_w_2023, type="l", main="Quadratic Trend")
@@ -84,7 +84,7 @@ y2_model <- auto.arima(y2, ic = "aicc")
 
 y2spec <- ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,1)), 
                     mean.model=list(armaOrder = c(5, 2), include.mean=TRUE))
-y2_garch <- ugarchfit(spec = y2spec, data = y2)
+y2_garch <- ugarchfit(spec = y2spec, data = y2, solver="hybrid")
 y2_garch@fit$solver$sol$pars
 
 # plots
@@ -103,7 +103,7 @@ lines(density(y2), col="red")
 qqnorm(y2, main="QQ Plot")
 acf(y2)
 
-
+# ARIMA RESIDUALS
 # fit mvn distribution to residuals
 res_mvn <- mvn("XXX", cbind(y_model$residuals, y2_model$residuals))
 
@@ -116,6 +116,12 @@ res2_ghyp <- stepAIC.ghyp(y2_model$residuals, silent=TRUE)
 # ljung box test
 checkresiduals(y_model)
 checkresiduals(y2_model)
+
+
+# ARMA GARCH RESIDUALS
+garch_res_ghyp <- stepAIC.ghyp(cbind(y_garch@fit$residuals, y2_garch@fit$residuals), silent = TRUE)
+garch_res_ghyp$best.model
+
 
 
 
