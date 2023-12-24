@@ -46,7 +46,9 @@ yspec <- ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,1))
                     mean.model=list(armaOrder = c(1, 4), include.mean=TRUE))
 y_garch <- ugarchfit(spec = yspec, data = y, solver="hybrid")
 y_garch@fit$coef
-y_gar_res <- y_garch@fit$res
+y_gar_res <- y_garch@fit$residuals
+y_armac <- y_garch@fit$coef[2:6]
+y_garchc <- y_garch@fit$coef[7:9]
 
 # plots
 plot(miami_w_2023, type="l", main="Quadratic Trend")
@@ -85,7 +87,10 @@ y2_model <- auto.arima(y2, ic = "aicc")
 y2spec <- ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,1)), 
                     mean.model=list(armaOrder = c(5, 2), include.mean=TRUE))
 y2_garch <- ugarchfit(spec = y2spec, data = y2, solver="hybrid")
-y2_garch@fit$solver$sol$pars
+y2_garch@fit$solver$sol$par
+y2_armac <- y2_garch@fit$solver$sol$par[2:8]
+y2_garchc <- y2_garch@fit$solver$sol$par[9:11]
+y2_gar_res <- y2_garch@fit$residuals
 
 # plots
 plot(tampa_w_2023, type="l", main="Quadratic Trend")
@@ -118,15 +123,56 @@ checkresiduals(y_model)
 checkresiduals(y2_model)
 
 
+#ARIMA FORECASTING
+t <- 5832
+y11 <- miami_w_2023[t] + y_model$coef[1]*y_model$residuals[t] + y_model$coef[2]*y_model$residuals[t-1] + y_model$coef[3]*y_model$residuals[t-2] + y_model$coef[4]*y_model$residuals[t-3]
+y12 <- y11 + y_model$coef[2]*y_model$residuals[t] + y_model$coef[3]*y_model$residuals[t-1] + y_model$coef[4]*y_model$residuals[t-2]
+y13 <- y12 + y_model$coef[3]*y_model$residuals[t] + y_model$coef[4]*y_model$residuals[t-1]
+y14 <- y13 + y_model$coef[4]*y_model$residuals[t] 
+y15 <- y14
+y21 <- y2_model$coef[1]*tampa_w_2023[t] + y2_model$coef[2]*tampa_w_2023[t-1] + y2_model$coef[3]*tampa_w_2023[t-2] + y2_model$coef[4]*tampa_w_2023[t-3] + y2_model$coef[5]*tampa_w_2023[t-4] + y2_model$coef[6]*y2_model$residuals[t] + y2_model$coef[7]*y2_model$residuals[t-1]
+y22 <- y2_model$coef[1]*y21 + y2_model$coef[2]*tampa_w_2023[t] + y2_model$coef[3]*tampa_w_2023[t-1] + y2_model$coef[4]*tampa_w_2023[t-2] + y2_model$coef[5]*tampa_w_2023[t-3] + y2_model$coef[7]*y2_model$residuals[t]
+y23 <- y2_model$coef[1]*y22 + y2_model$coef[2]*y21 + y2_model$coef[3]*tampa_w_2023[t] + y2_model$coef[4]*tampa_w_2023[t-1] + y2_model$coef[5]*tampa_w_2023[t-2]
+y24 <- y2_model$coef[1]*y23 + y2_model$coef[2]*y22 + y2_model$coef[3]*y21 + y2_model$coef[4]*tampa_w_2023[t] + y2_model$coef[5]*tampa_w_2023[t-1]
+y25 <- y2_model$coef[1]*y24 + y2_model$coef[2]*y23 + y2_model$coef[3]*y22 + y2_model$coef[4]*y21 + y2_model$coef[5]*tampa_w_2023[t]
+
+
+
+
 # ARMA GARCH RESIDUALS
 garch_res_ghyp <- stepAIC.ghyp(cbind(y_garch@fit$residuals, y2_garch@fit$residuals), silent = TRUE)
 garch_res_ghyp$best.model
 
+t <- 5832
 
+y11g <- y_armac[1]*miami_w_2023[t] + y_armac[2]*y_gar_res[t] + y_armac[3]*y_gar_res[t-1] + y_armac[4]*y_gar_res[t-2] + y_armac[5]*y_gar_res[t-3]
+y12g <- y_armac[1]*y11 + y_armac[3]*y_gar_res[t] + y_armac[4]*y_gar_res[t-1] + y_armac[5]*y_gar_res[t-2]
+y13g <- y_armac[1]*y12 + y_armac[4]*y_gar_res[t] + y_armac[5]*y_gar_res[t-1]
+y14g <- y_armac[1]*y13 + y_armac[5]*y_gar_res[t] 
+y15g <- y_armac[1]*y14
+y21g <- y2_armac[1]*tampa_w_2023[t] + y2_armac[2]*tampa_w_2023[t-1] + y2_armac[3]*tampa_w_2023[t-2] + y2_armac[4]*tampa_w_2023[t-3] + y2_armac[5]*tampa_w_2023[t-4] + y2_armac[6]*y2_gar_res[t] + y2_armac[7]*y2_gar_res[t-1]
+y22g <- y2_armac[1]*y21 + y2_armac[2]*tampa_w_2023[t] + y2_armac[3]*tampa_w_2023[t-1] + y2_armac[4]*tampa_w_2023[t-2] + y2_armac[5]*tampa_w_2023[t-3] + y2_armac[7]*y2_gar_res[t]
+y23g <- y2_armac[1]*y22 + y2_armac[2]*y21 + y2_armac[3]*tampa_w_2023[t] + y2_armac[4]*tampa_w_2023[t-1] + y2_armac[5]*tampa_w_2023[t-2]
+y24g <- y2_armac[1]*y23 + y2_armac[2]*y22 + y2_armac[3]*y21 + y2_armac[4]*tampa_w_2023[t] + y2_armac[5]*tampa_w_2023[t-1]
+y25g <- y2_armac[1]*y24 + y2_armac[2]*y23 + y2_armac[3]*y22 + y2_armac[4]*y21 + y2_armac[5]*tampa_w_2023[t]
+
+s1 = 
 
 
 # VAR model
 ys_var <- VAR(cbind(y, y2), p=1, type="none")
+# prediction
+phi_var <- matrix(c(ys_var$varresult$y$coefficients, ys_var$varresult$y2$coefficients),
+                     nrow=2, ncol=2, byrow=TRUE)
+Y_fin <- c(miami_w_2023[5832], tampa_w_2023[5832])
+
+var_forecast <- function(tau){
+  fore <- Y_fin
+  for (i in 1:tau){
+    fore <- phi_var %*% fore
+  }
+  return(fore)
+}
 
 y_var_res <- ys_var$varresult$y$residuals
 y2_var_res <- ys_var$varresult$y2$residuals
