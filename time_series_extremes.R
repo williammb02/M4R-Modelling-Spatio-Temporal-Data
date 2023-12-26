@@ -10,5 +10,5 @@ w2 <- daily_max(tampa_w_2023)
 w1gev <- gev.fit(w1)
 w2gev <- gev.fit(w2)
 
-w1gpd <- gpd.fit(miami_w_2023, quantile(miami_w_2023), npy=24)
-w2gpd <- gpd.fit(tampa_w_2023, quantile(tampa_w_2023), npy=24)
+w1gpd <- gpd.fit(miami_w_2023, quantile(miami_w_2023, 0.95), npy=24)
+w2gpd <- gpd.fit(tampa_w_2023, quantile(tampa_w_2023, 0.95), npy=24)
