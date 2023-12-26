@@ -180,3 +180,58 @@ y2_var_res <- ys_var$varresult$y2$residuals
 
 var_res_mvn <- mvn("XXX", cbind(y_var_res, y2_var_res))
 var_res_ghyp <- stepAIC.ghyp(cbind(y_var_res, y2_var_res), silent=TRUE)
+
+
+
+# TAIL DEPENDENCE
+
+tde <- function(u){
+  q1 <- quantile(miami_w_2023, u)
+  q2 <- quantile(tampa_w_2023, u)
+  num <- 0
+  den <- 0
+  l <- length(miami_w_2023)
+  for (i in 1:l){
+    if ((miami_w_2023[i] > u) & (tampa_w_2023[i] > u)){
+      num <- num + 1
+    }
+    if (miami_w_2023[i] > u){
+      den <- den + 1
+    }
+  }
+  return(c(num/l, den/l, num/den))
+}
+
+tde_lag <- function(u, tau){
+  q1 <- quantile(miami_w_2023, u)
+  q2 <- quantile(tampa_w_2023, u)
+  num <- 0
+  den <- 0
+  l <- length(miami_w_2023)
+  for (i in 1:(l-tau)){
+    if ((miami_w_2023[i] > u) & (tampa_w_2023[i+tau] > u)){
+      num <- num + 1
+    }
+    if (miami_w_2023[i] > u){
+      den <- den + 1
+    }
+  }
+  return(c(num/l, den/l, num/den))
+}
+
+tde_lag_2 <- function(x, y, u, tau){
+  q1 <- quantile(x, u)
+  q2 <- quantile(y, u)
+  num <- 0
+  den <- 0
+  l <- length(x)
+  for (i in 1:(l-tau)){
+    if ((x[i] > u) & (y[i+tau] > u)){
+      num <- num + 1
+    }
+    if (x[i] > u){
+      den <- den + 1
+    }
+  }
+  return(c(num/l, den/l, num/den))
+}
