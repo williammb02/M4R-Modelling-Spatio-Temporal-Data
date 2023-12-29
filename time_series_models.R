@@ -44,8 +44,8 @@ y_model <- auto.arima(y, ic = "aicc")
 # fit arma garch model to y 
 yspec <- ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,1)), 
                     mean.model=list(armaOrder = c(1, 4), include.mean=TRUE))
-y_garch <- ugarchfit(spec = yspec, data = y, solver="hybrid")
-y_garch@fit$coef
+y_garch <- ugarchfit(spec = yspec, data = y, solver="lbfgs")
+y_garch@fit$solver$sol$par
 y_gar_res <- y_garch@fit$residuals
 y_armac <- y_garch@fit$coef[2:6]
 y_garchc <- y_garch@fit$coef[7:9]
@@ -156,7 +156,22 @@ y23g <- y2_armac[1]*y22 + y2_armac[2]*y21 + y2_armac[3]*tampa_w_2023[t] + y2_arm
 y24g <- y2_armac[1]*y23 + y2_armac[2]*y22 + y2_armac[3]*y21 + y2_armac[4]*tampa_w_2023[t] + y2_armac[5]*tampa_w_2023[t-1]
 y25g <- y2_armac[1]*y24 + y2_armac[2]*y23 + y2_armac[3]*y22 + y2_armac[4]*y21 + y2_armac[5]*tampa_w_2023[t]
 
-s1 = 
+#ARMA GARCH conditional variances
+sigma1 <- coredata(sigma(y_garch))[t,1]
+sigma2 <- coredata(sigma(y2_garch))[t,1]
+
+s11 <- y_garchc[1] + (y_garchc[2]*y_gar_res[t]^2 + y_garchc[3]*sigma1^2)
+s12 <- y_garchc[1]*(1 + (y_garchc[2] + y_garchc[3])) + (y_garchc[2] + y_garchc[3])*(y_garchc[2]*y_gar_res[t]^2 + y_garchc[3]*sigma1^2)
+s13 <- y_garchc[1]*(1 + (y_garchc[2] + y_garchc[3]) + (y_garchc[2] + y_garchc[3])^2) + (y_garchc[2]*y_gar_res[t]^2 + y_garchc[3]*sigma1^2)*(y_garchc[2] + y_garchc[3])^2
+s14 <- y_garchc[1]*(1 + (y_garchc[2] + y_garchc[3]) + (y_garchc[2] + y_garchc[3])^2 + (y_garchc[2] + y_garchc[3])^3) + (y_garchc[2]*y_gar_res[t]^2 + y_garchc[3]*sigma1^2)*(y_garchc[2] + y_garchc[3])^3
+s15 <- y_garchc[1]*(1 + (y_garchc[2] + y_garchc[3]) + (y_garchc[2] + y_garchc[3])^2 + (y_garchc[2] + y_garchc[3])^3 + (y_garchc[2] + y_garchc[3])^4) + (y_garchc[2]*y_gar_res[t]^2 + y_garchc[3]*sigma1^2)*(y_garchc[2] + y_garchc[3])^4
+s21 <- y2_garchc[1] + (y2_garchc[2]*y2_gar_res[t]^2 + y2_garchc[3]*sigma2^2)
+s22 <- y2_garchc[1]*(1 + (y2_garchc[2] + y2_garchc[3])) + (y2_garchc[2] + y2_garchc[3])*(y2_garchc[2]*y2_gar_res[t]^2 + y2_garchc[3]*sigma2^2)
+s23 <- y2_garchc[1]*(1 + (y2_garchc[2] + y2_garchc[3]) + (y2_garchc[2] + y2_garchc[3])^2) + (y2_garchc[2]*y2_gar_res[t]^2 + y2_garchc[3]*sigma2^2)*(y2_garchc[2] + y2_garchc[3])^2
+s24 <- y2_garchc[1]*(1 + (y2_garchc[2] + y2_garchc[3]) + (y2_garchc[2] + y2_garchc[3])^2 + (y2_garchc[2] + y2_garchc[3])^3) + (y2_garchc[2]*y2_gar_res[t]^2 + y2_garchc[3]*sigma2^2)*(y2_garchc[2] + y2_garchc[3])^3
+s25 <- y2_garchc[1]*(1 + (y2_garchc[2] + y2_garchc[3]) + (y2_garchc[2] + y2_garchc[3])^2 + (y2_garchc[2] + y2_garchc[3])^3 + (y2_garchc[2] + y2_garchc[3])^4) + (y2_garchc[2]*y2_gar_res[t]^2 + y2_garchc[3]*sigma2^2)*(y2_garchc[2] + y2_garchc[3])^4
+
+
 
 
 # VAR model
@@ -201,6 +216,14 @@ tde_lag <- function(u, tau){
   return(c(num/l, den/l, num/den))
 }
 
+tde_lag(0.8, 0)
+tde_lag(0.9, 0)
+tde_lag(0.95, 0)
+
+tde_lag(0.95, 12)
+tde_lag(0.95, 24)
+tde_lag(0.95, 168)
+
 tde_lag_2 <- function(x, y, u, tau){
   q1 <- quantile(x, u)
   q2 <- quantile(y, u)
@@ -217,3 +240,15 @@ tde_lag_2 <- function(x, y, u, tau){
   }
   return(c(num/l, den/l, num/den))
 }
+
+tde_lag_2(y_model$residuals, y2_model$residuals, 0.8, 0)
+tde_lag_2(y_model$residuals, y2_model$residuals, 0.9, 0)
+tde_lag_2(y_model$residuals, y2_model$residuals, 0.95, 0)
+
+tde_lag_2(y_gar_res, y2_gar_res, 0.8, 0)
+tde_lag_2(y_gar_res, y2_gar_res, 0.9, 0)
+tde_lag_2(y_gar_res, y2_gar_res, 0.95, 0)
+
+tde_lag_2(y_var_res, y2_var_res, 0.8, 0)
+tde_lag_2(y_var_res, y2_var_res, 0.9, 0)
+tde_lag_2(y_var_res, y2_var_res, 0.95, 0)
