@@ -184,24 +184,6 @@ var_res_ghyp <- stepAIC.ghyp(cbind(y_var_res, y2_var_res), silent=TRUE)
 
 
 # TAIL DEPENDENCE
-
-tde <- function(u){
-  q1 <- quantile(miami_w_2023, u)
-  q2 <- quantile(tampa_w_2023, u)
-  num <- 0
-  den <- 0
-  l <- length(miami_w_2023)
-  for (i in 1:l){
-    if ((miami_w_2023[i] > u) & (tampa_w_2023[i] > u)){
-      num <- num + 1
-    }
-    if (miami_w_2023[i] > u){
-      den <- den + 1
-    }
-  }
-  return(c(num/l, den/l, num/den))
-}
-
 tde_lag <- function(u, tau){
   q1 <- quantile(miami_w_2023, u)
   q2 <- quantile(tampa_w_2023, u)
