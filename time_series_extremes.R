@@ -1,3 +1,15 @@
+# test for tail dependence
+taildep.test(miami_w_2023, tampa_w_2023, cthresh = -0.32)
+taildep.test(y_model$residuals, y2_model$residuals, cthresh = -0.41)
+taildep.test(y_gar_res, y2_gar_res, cthresh = -0.4)
+taildep.test(y_var_res, y2_var_res, cthresh = -0.4)
+
+taildep.test(y_model$residuals, y2_model$residuals, cthresh = -0.05)
+taildep.test(y_gar_res, y2_gar_res, cthresh = -0.05)
+taildep.test(y_var_res, y2_var_res, cthresh = -0.05)
+
+
+# look at maximum daily rainfall
 daily_max <- function(x){
   max_list <- split(x, rep(1:(length(x)/24), each=24))
   v <- as.vector(sapply(max_list, max))
@@ -39,3 +51,7 @@ bpot_surv <- function(x, y, alpha){
 
 # tail dependence
 bpot_surv(quantile(miami_w_2023, 0.99), quantile(tampa_w_2023, 0.99), 0.5)/(1-pot_dist1(quantile(miami_w_2023, 0.99)))
+
+
+
+

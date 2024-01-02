@@ -252,3 +252,6 @@ tde_lag_2(y_gar_res, y2_gar_res, 0.95, 0)
 tde_lag_2(y_var_res, y2_var_res, 0.8, 0)
 tde_lag_2(y_var_res, y2_var_res, 0.9, 0)
 tde_lag_2(y_var_res, y2_var_res, 0.95, 0)
+
+
+# CDF of ghyp
