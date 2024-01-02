@@ -259,22 +259,6 @@ q <- c(0.8, 0.9, 0.95)
 
 set.seed(5)
 
-# For y_model and y2_model
-pghyp(c(quantile(y_model$residuals, 0.8), quantile(y2_model$residuals, 0.8)), object = res_ghyp$best.model, lower.tail = FALSE)
-pghyp(c(quantile(y_model$residuals, 0.9), quantile(y2_model$residuals, 0.9)), object = res_ghyp$best.model, lower.tail = FALSE)
-pghyp(c(quantile(y_model$residuals, 0.95), quantile(y2_model$residuals, 0.95)), object = res_ghyp$best.model, lower.tail = FALSE)
-
-# For y_gar_res and y2_gar_res
-pghyp(c(quantile(y_gar_res, 0.8), quantile(y2_gar_res, 0.8)), object = garch_res_ghyp$best.model, lower.tail = FALSE)
-pghyp(c(quantile(y_gar_res, 0.9), quantile(y2_gar_res, 0.9)), object = garch_res_ghyp$best.model, lower.tail = FALSE)
-pghyp(c(quantile(y_gar_res, 0.95), quantile(y2_gar_res, 0.95)), object = garch_res_ghyp$best.model, lower.tail = FALSE)
-
-# For y_var_res and y2_var_res
-pghyp(c(quantile(y_var_res, 0.8), quantile(y2_var_res, 0.8)), object = var_res_ghyp$best.model, lower.tail = FALSE)
-pghyp(c(quantile(y_var_res, 0.9), quantile(y2_var_res, 0.9)), object = var_res_ghyp$best.model, lower.tail = FALSE)
-pghyp(c(quantile(y_var_res, 0.95), quantile(y2_var_res, 0.95)), object = var_res_ghyp$best.model, lower.tail = FALSE)
-
-
 pghyp(c(quantile(y_model$residuals, 0.8), quantile(y2_model$residuals, 0.8)), object = res_ghyp$best.model, lower.tail = FALSE)/0.2
 pghyp(c(quantile(y_model$residuals, 0.9), quantile(y2_model$residuals, 0.9)), object = res_ghyp$best.model, lower.tail = FALSE)/0.1
 pghyp(c(quantile(y_model$residuals, 0.95), quantile(y2_model$residuals, 0.95)), object = res_ghyp$best.model, lower.tail = FALSE)/0.05
