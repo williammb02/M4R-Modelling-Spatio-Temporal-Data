@@ -53,5 +53,51 @@ bpot_surv <- function(x, y, alpha){
 bpot_surv(quantile(miami_w_2023, 0.99), quantile(tampa_w_2023, 0.99), 0.5)/(1-pot_dist1(quantile(miami_w_2023, 0.99)))
 
 
+# POT models for the remainders and estimates of exceedance probabilities
+
+r11gpd <- gpd.fit(y_model$residuals, quantile(y_model$residuals, 0.95), npy=24)
+r12gpd <- gpd.fit(y2_model$residuals, quantile(y2_model$residuals, 0.95), npy=24)
+
+r21gpd <- gpd.fit(y_gar_res, quantile(y_gar_res, 0.95), npy=24)
+r22gpd <- gpd.fit(y2_gar_res, quantile(y2_gar_res, 0.95), npy=24)
+
+r31gpd <- gpd.fit(y_var_res, quantile(y_var_res, 0.95), npy=24)
+r32gpd <- gpd.fit(y2_var_res, quantile(y2_var_res, 0.95), npy=24)
+
+pot_dist_rem1 <- function(x, i){
+  if(i == 1) {
+    return(1-(1 + r11gpd$mle[2]*(x-quantile(y_model$residuals, 0.95))/r11gpd$mle[1])^(-1/r11gpd$mle[2]))
+  } else if(i == 2){
+    return(1-(1 + r21gpd$mle[2]*(x-quantile(y_gar_res, 0.95))/r21gpd$mle[1])^(-1/r21gpd$mle[2]))
+  } else if(i == 3){
+    return(1-(1 + r31gpd$mle[2]*(x-quantile(y_var_res, 0.95))/r31gpd$mle[1])^(-1/r31gpd$mle[2]))
+  }
+}
+
+pot_dist_rem2 <- function(x, i){
+  if(i == 1) {
+    return(1-(1 + r12gpd$mle[2]*(x-quantile(y_model$residuals, 0.95))/r12gpd$mle[1])^(-1/r12gpd$mle[2]))
+  } else if(i == 2) {
+    return(1-(1 + r22gpd$mle[2]*(x-quantile(y_gar_res, 0.95))/r22gpd$mle[1])^(-1/r22gpd$mle[2]))
+  } else if(i == 3) {
+    return(1-(1 + r32gpd$mle[2]*(x-quantile(y_var_res, 0.95))/r32gpd$mle[1])^(-1/r32gpd$mle[2]))
+  }
+}
+
+bpot_dist_rem <- function(x, y, i, alpha){
+  x1 <- -(log(pot_dist_rem1(x, i)))^(-1)
+  y1 <- -(log(pot_dist_rem2(y, i)))^(-1)
+  v <- (x1^(-1/alpha) + y1^(-1/alpha))^alpha
+  return(exp(-v))
+}
+
+bpot_surv_rem <- function(x, y, i, alpha){
+  return(1-pot_dist_rem1(x, i)-pot_dist_rem2(y, i)+bpot_dist_rem(x, y, i, alpha))
+}
+
+
+bpot_surv_rem(quantile(y_model$residuals, 0.99), quantile(y2_model$residuals, 0.99), 1, 0.5)/(1-pot_dist_rem1(quantile(y_model$residuals, 0.99), 1))
+bpot_surv_rem(quantile(y_gar_res, 0.99), quantile(y2_gar_res, 0.99), 2, 0.5)/(1-pot_dist_rem1(quantile(y_gar_res, 0.99), 2))
+bpot_surv_rem(quantile(y_var_res, 0.99), quantile(y2_var_res, 0.99), 3, 0.5)/(1-pot_dist_rem1(quantile(y_var_res, 0.99), 3))
 
 
