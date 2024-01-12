@@ -101,3 +101,34 @@ bpot_surv_rem(quantile(y_gar_res, 0.99), quantile(y2_gar_res, 0.99), 2, 0.5)/(1-
 bpot_surv_rem(quantile(y_var_res, 0.99), quantile(y2_var_res, 0.99), 3, 0.5)/(1-pot_dist_rem1(quantile(y_var_res, 0.99), 3))
 
 
+# return levels for GEV
+rl1 <- function(p){
+  return(w1e[1] - (w1e[2]/w1e[3])*(1-(-log(1-p))^(-w1e[3])))
+}
+
+rl2 <- function(p){
+  return(w2e[1] - (w2e[2]/w2e[3])*(1-(-log(1-p))^(-w2e[3])))
+}
+
+# return levels for POT
+zeta <- function(x, u){
+  count <- 0
+  n <- length(x)
+  for (i in 1:n){
+    if (x[i] > u){
+      count <- count + 1
+    }
+  }
+  return(count/n)
+}
+
+rlpot <- function(x, m){
+  u <- quantile(x, 0.95)
+  zetahat <- zeta(x, u)
+  mle <- gpd.fit(x, u, npy = 24, show=FALSE)$mle
+  return(u + (mle[1]/mle[2])*((m*zetahat)^(mle[2])-1))
+}
+
+c(rlpot(y_model$residuals, 24), rlpot(y_model$residuals, 168), rlpot(y2_model$residuals, 24), rlpot(y2_model$residuals, 168))
+c(rlpot(y_gar_res, 24), rlpot(y_gar_res, 168), rlpot(y2_gar_res, 24), rlpot(y2_gar_res, 168))
+c(rlpot(y_var_res, 24), rlpot(y_var_res, 168), rlpot(y2_var_res, 24), rlpot(y2_var_res, 168))
