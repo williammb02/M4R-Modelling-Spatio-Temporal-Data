@@ -171,8 +171,49 @@ s23 <- y2_garchc[1]*(1 + (y2_garchc[2] + y2_garchc[3]) + (y2_garchc[2] + y2_garc
 s24 <- y2_garchc[1]*(1 + (y2_garchc[2] + y2_garchc[3]) + (y2_garchc[2] + y2_garchc[3])^2 + (y2_garchc[2] + y2_garchc[3])^3) + (y2_garchc[2]*y2_gar_res[t]^2 + y2_garchc[3]*sigma2^2)*(y2_garchc[2] + y2_garchc[3])^3
 s25 <- y2_garchc[1]*(1 + (y2_garchc[2] + y2_garchc[3]) + (y2_garchc[2] + y2_garchc[3])^2 + (y2_garchc[2] + y2_garchc[3])^3 + (y2_garchc[2] + y2_garchc[3])^4) + (y2_garchc[2]*y2_gar_res[t]^2 + y2_garchc[3]*sigma2^2)*(y2_garchc[2] + y2_garchc[3])^4
 
+# conditional variance formula
+miami_s_fc <- function(tau){
+  t <- 5832
+  summand <- rep(0, times = tau)
+  summand[1] <- 1
+  if(tau > 1){
+    for(i in 2:tau){
+      summand[i] <- (y_garchc[2] + y_garchc[3])^(i-1)
+    }
+  }
+  sig <- y_garchc[1]*sum(summand) + (y_garchc[2] + y_garchc[3])^(tau-1)*(y_garchc[2]*y_gar_res[t]^2 + y_garchc[3]*sigma1^2)
+  return(sig)
+}
 
+tampa_s_fc <- function(tau){
+  t <- 5832
+  summand <- rep(0, times = tau)
+  summand[1] <- 1
+  if(tau > 1){
+    for(i in 2:tau){
+      summand[i] <- (y2_garchc[2] + y2_garchc[3])^(i-1)
+    }
+  }
+  sig <- y2_garchc[1]*sum(summand) + (y2_garchc[2] + y2_garchc[3])^(tau-1)*(y2_garchc[2]*y2_gar_res[t]^2 + y2_garchc[3]*sigma2^2)
+  return(sig)
+}
 
+xtss <- 1:(length(miami_w_2023)+48)
+miami_s <- rep(0, times = 48)
+tampa_s <- rep(0, times = 48)
+for(i in 1:48){
+  miami_s[i] <- miami_s_fc(i)
+  tampa_s[i] <- tampa_s_fc(i)
+}
+
+# plot showing last 1 week and then prediction for next week
+plot(xtss[(t-168):length(xtss)], c(coredata(sigma(y_garch))[(t-168):t,1], miami_s), 
+     type="l", xlab="Index", ylab="Variance", main="Miami")
+abline(v = length(miami_w_2023), col="red")
+
+plot(xtss[(t-168):length(xtss)], c(coredata(sigma(y2_garch))[(t-168):t,1], tampa_s), 
+     type="l", xlab="Index", ylab="Variance", main="Tampa")
+abline(v = length(tampa_w_2023), col="red")
 
 # VAR model
 ys_var <- VAR(cbind(y, y2), p=1, type="none")
@@ -189,9 +230,27 @@ var_forecast <- function(tau){
   return(fore)
 }
 
+# create a plot showing the time series and then the forecasts
+miamiforecast <- c(rep(0, times = 504))
+tampaforecast <- c(rep(0, times = 504))
+
+xts <- 1:(length(miami_w_2023)+504)
+
+for(i in 1:504){
+  miamiforecast[i] <- var_forecast(i)[1]
+  tampaforecast[i] <- var_forecast(i)[2]
+}
+
+plot(xts[5000:length(xts)], c(miami_w_2023, miamiforecast)[5000:length(xts)], 
+     type="l", main="Miami", xlab="Index", ylab="Speed")
+abline(v = length(miami_w_2023), col="red")
+
+plot(xts[5000:length(xts)], c(tampa_w_2023, tampaforecast)[5000:length(xts)], 
+     type="l", main="Tampa", xlab="Index", ylab="Speed")
+abline(v = length(tampa_w_2023), col="red")
+
 y_var_res <- ys_var$varresult$y$residuals
 y2_var_res <- ys_var$varresult$y2$residuals
-
 
 var_res_mvn <- mvn("XXX", cbind(y_var_res, y2_var_res))
 var_res_ghyp <- stepAIC.ghyp(cbind(y_var_res, y2_var_res), silent=TRUE)
