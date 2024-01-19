@@ -123,40 +123,70 @@ checkresiduals(y_model)
 checkresiduals(y2_model)
 
 
-#ARIMA FORECASTING
+# ARIMA forecasting
 t <- 5832
-y11 <- miami_w_2023[t] + y_model$coef[1]*y_model$residuals[t] + y_model$coef[2]*y_model$residuals[t-1] + y_model$coef[3]*y_model$residuals[t-2] + y_model$coef[4]*y_model$residuals[t-3]
+y11 <- y[t] + y_model$coef[1]*y_model$residuals[t] + y_model$coef[2]*y_model$residuals[t-1] + y_model$coef[3]*y_model$residuals[t-2] + y_model$coef[4]*y_model$residuals[t-3]
 y12 <- y11 + y_model$coef[2]*y_model$residuals[t] + y_model$coef[3]*y_model$residuals[t-1] + y_model$coef[4]*y_model$residuals[t-2]
 y13 <- y12 + y_model$coef[3]*y_model$residuals[t] + y_model$coef[4]*y_model$residuals[t-1]
 y14 <- y13 + y_model$coef[4]*y_model$residuals[t] 
 y15 <- y14
-y21 <- y2_model$coef[1]*tampa_w_2023[t] + y2_model$coef[2]*tampa_w_2023[t-1] + y2_model$coef[3]*tampa_w_2023[t-2] + y2_model$coef[4]*tampa_w_2023[t-3] + y2_model$coef[5]*tampa_w_2023[t-4] + y2_model$coef[6]*y2_model$residuals[t] + y2_model$coef[7]*y2_model$residuals[t-1]
-y22 <- y2_model$coef[1]*y21 + y2_model$coef[2]*tampa_w_2023[t] + y2_model$coef[3]*tampa_w_2023[t-1] + y2_model$coef[4]*tampa_w_2023[t-2] + y2_model$coef[5]*tampa_w_2023[t-3] + y2_model$coef[7]*y2_model$residuals[t]
-y23 <- y2_model$coef[1]*y22 + y2_model$coef[2]*y21 + y2_model$coef[3]*tampa_w_2023[t] + y2_model$coef[4]*tampa_w_2023[t-1] + y2_model$coef[5]*tampa_w_2023[t-2]
-y24 <- y2_model$coef[1]*y23 + y2_model$coef[2]*y22 + y2_model$coef[3]*y21 + y2_model$coef[4]*tampa_w_2023[t] + y2_model$coef[5]*tampa_w_2023[t-1]
-y25 <- y2_model$coef[1]*y24 + y2_model$coef[2]*y23 + y2_model$coef[3]*y22 + y2_model$coef[4]*y21 + y2_model$coef[5]*tampa_w_2023[t]
+y21 <- y2_model$coef[1]*y2[t] + y2_model$coef[2]*y2[t-1] + y2_model$coef[3]*y2[t-2] + y2_model$coef[4]*y2[t-3] + y2_model$coef[5]*y2[t-4] + y2_model$coef[6]*y2_model$residuals[t] + y2_model$coef[7]*y2_model$residuals[t-1]
+y22 <- y2_model$coef[1]*y21 + y2_model$coef[2]*y2[t] + y2_model$coef[3]*y2[t-1] + y2_model$coef[4]*y2[t-2] + y2_model$coef[5]*y2[t-3] + y2_model$coef[7]*y2_model$residuals[t]
+y23 <- y2_model$coef[1]*y22 + y2_model$coef[2]*y21 + y2_model$coef[3]*y2[t] + y2_model$coef[4]*y2[t-1] + y2_model$coef[5]*y2[t-2]
+y24 <- y2_model$coef[1]*y23 + y2_model$coef[2]*y22 + y2_model$coef[3]*y21 + y2_model$coef[4]*y2[t] + y2_model$coef[5]*y2[t-1]
+y25 <- y2_model$coef[1]*y24 + y2_model$coef[2]*y23 + y2_model$coef[3]*y22 + y2_model$coef[4]*y21 + y2_model$coef[5]*y2[t]
+
+# ARIMA check forecasting inside time series lines up with what was predicted
+# consider after the first 1000 observations
+k <- 1000
+y11 <- y[k] + y_model$coef[1]*y_model$residuals[k] + y_model$coef[2]*y_model$residuals[k-1] + y_model$coef[3]*y_model$residuals[k-2] + y_model$coef[4]*y_model$residuals[k-3]
+y12 <- y11 + y_model$coef[2]*y_model$residuals[k] + y_model$coef[3]*y_model$residuals[k-1] + y_model$coef[4]*y_model$residuals[k-2]
+y13 <- y12 + y_model$coef[3]*y_model$residuals[k] + y_model$coef[4]*y_model$residuals[k-1]
+y14 <- y13 + y_model$coef[4]*y_model$residuals[k] 
+y15 <- y14
+y21 <- y2_model$coef[1]*y2[k] + y2_model$coef[2]*y2[k-1] + y2_model$coef[3]*y2[k-2] + y2_model$coef[4]*y2[k-3] + y2_model$coef[5]*y2[k-4] + y2_model$coef[6]*y2_model$residuals[k] + y2_model$coef[7]*y2_model$residuals[k-1]
+y22 <- y2_model$coef[1]*y21 + y2_model$coef[2]*y2[k] + y2_model$coef[3]*y2[k-1] + y2_model$coef[4]*y2[k-2] + y2_model$coef[5]*y2[k-3] + y2_model$coef[7]*y2_model$residuals[k]
+y23 <- y2_model$coef[1]*y22 + y2_model$coef[2]*y21 + y2_model$coef[3]*y2[k] + y2_model$coef[4]*y2[k-1] + y2_model$coef[5]*y2[k-2]
+y24 <- y2_model$coef[1]*y23 + y2_model$coef[2]*y22 + y2_model$coef[3]*y21 + y2_model$coef[4]*y2[k] + y2_model$coef[5]*y2[k-1]
+y25 <- y2_model$coef[1]*y24 + y2_model$coef[2]*y23 + y2_model$coef[3]*y22 + y2_model$coef[4]*y21 + y2_model$coef[5]*y2[k]
+
+y1preds <- rep(y15, times=495)
+y1preds <- c(y11, y12, y13, y14, y15, y1preds)
+
+y2preds <- c(y21, y22, y23, y24, y25, rep(0, times=495))
+for(i in 6:500){
+  y2preds[i] <- y2_model$coef[1]*y2preds[i-1] + y2_model$coef[2]*y2preds[i-2] + y2_model$coef[3]*y2preds[i-3] + y2_model$coef[4]*y2preds[i-4] + y2_model$coef[5]*y2preds[i-5]
+}
+
+yts <- 1:1500
+plot(yts, y[1:1500], type="l", xlab="Index", ylab="Speed", main="Miami")
+lines(yts[1001:1500], y1preds, col="blue")
+abline(v = 1000, col="red", lty=2)
+
+plot(yts, y2[1:1500], type="l", xlab="Index", ylab="Speed", main="Tampa")
+lines(yts[1001:1500], y2preds, col="blue")
+abline(v = 1000, col="red", lty=2)
 
 
-
-
-# ARMA GARCH RESIDUALS
+# ARMA GARCH residuals
 garch_res_ghyp <- stepAIC.ghyp(cbind(y_garch@fit$residuals, y2_garch@fit$residuals), silent = TRUE)
 garch_res_ghyp$best.model
 
+# ARMA GARCH forecasting
 t <- 5832
 
-y11g <- y_armac[1]*miami_w_2023[t] + y_armac[2]*y_gar_res[t] + y_armac[3]*y_gar_res[t-1] + y_armac[4]*y_gar_res[t-2] + y_armac[5]*y_gar_res[t-3]
+y11g <- y_armac[1]*y[t] + y_armac[2]*y_gar_res[t] + y_armac[3]*y_gar_res[t-1] + y_armac[4]*y_gar_res[t-2] + y_armac[5]*y_gar_res[t-3]
 y12g <- y_armac[1]*y11 + y_armac[3]*y_gar_res[t] + y_armac[4]*y_gar_res[t-1] + y_armac[5]*y_gar_res[t-2]
 y13g <- y_armac[1]*y12 + y_armac[4]*y_gar_res[t] + y_armac[5]*y_gar_res[t-1]
 y14g <- y_armac[1]*y13 + y_armac[5]*y_gar_res[t] 
 y15g <- y_armac[1]*y14
-y21g <- y2_armac[1]*tampa_w_2023[t] + y2_armac[2]*tampa_w_2023[t-1] + y2_armac[3]*tampa_w_2023[t-2] + y2_armac[4]*tampa_w_2023[t-3] + y2_armac[5]*tampa_w_2023[t-4] + y2_armac[6]*y2_gar_res[t] + y2_armac[7]*y2_gar_res[t-1]
-y22g <- y2_armac[1]*y21 + y2_armac[2]*tampa_w_2023[t] + y2_armac[3]*tampa_w_2023[t-1] + y2_armac[4]*tampa_w_2023[t-2] + y2_armac[5]*tampa_w_2023[t-3] + y2_armac[7]*y2_gar_res[t]
-y23g <- y2_armac[1]*y22 + y2_armac[2]*y21 + y2_armac[3]*tampa_w_2023[t] + y2_armac[4]*tampa_w_2023[t-1] + y2_armac[5]*tampa_w_2023[t-2]
-y24g <- y2_armac[1]*y23 + y2_armac[2]*y22 + y2_armac[3]*y21 + y2_armac[4]*tampa_w_2023[t] + y2_armac[5]*tampa_w_2023[t-1]
-y25g <- y2_armac[1]*y24 + y2_armac[2]*y23 + y2_armac[3]*y22 + y2_armac[4]*y21 + y2_armac[5]*tampa_w_2023[t]
+y21g <- y2_armac[1]*y2[t] + y2_armac[2]*y2[t-1] + y2_armac[3]*y2[t-2] + y2_armac[4]*y2[t-3] + y2_armac[5]*y2[t-4] + y2_armac[6]*y2_gar_res[t] + y2_armac[7]*y2_gar_res[t-1]
+y22g <- y2_armac[1]*y21 + y2_armac[2]*y2[t] + y2_armac[3]*y2[t-1] + y2_armac[4]*y2[t-2] + y2_armac[5]*y2[t-3] + y2_armac[7]*y2_gar_res[t]
+y23g <- y2_armac[1]*y22 + y2_armac[2]*y21 + y2_armac[3]*y2[t] + y2_armac[4]*y2[t-1] + y2_armac[5]*y2[t-2]
+y24g <- y2_armac[1]*y23 + y2_armac[2]*y22 + y2_armac[3]*y21 + y2_armac[4]*y2[t] + y2_armac[5]*y2[t-1]
+y25g <- y2_armac[1]*y24 + y2_armac[2]*y23 + y2_armac[3]*y22 + y2_armac[4]*y21 + y2_armac[5]*y2[t]
 
-#ARMA GARCH conditional variances
+#ARMA GARCH conditional variance forecasting
 sigma1 <- coredata(sigma(y_garch))[t,1]
 sigma2 <- coredata(sigma(y2_garch))[t,1]
 
@@ -209,18 +239,22 @@ for(i in 1:48){
 # plot showing last 1 week and then prediction for next week
 plot(xtss[(t-168):length(xtss)], c(coredata(sigma(y_garch))[(t-168):t,1], miami_s), 
      type="l", xlab="Index", ylab="Variance", main="Miami")
-abline(v = length(miami_w_2023), col="red")
+abline(v = length(miami_w_2023), col="red", lty=2)
 
 plot(xtss[(t-168):length(xtss)], c(coredata(sigma(y2_garch))[(t-168):t,1], tampa_s), 
      type="l", xlab="Index", ylab="Variance", main="Tampa")
-abline(v = length(tampa_w_2023), col="red")
+abline(v = length(tampa_w_2023), col="red", lty=2)
+
+
+
+
 
 # VAR model
 ys_var <- VAR(cbind(y, y2), p=1, type="none")
-# prediction
+# VAR prediction
 phi_var <- matrix(c(ys_var$varresult$y$coefficients, ys_var$varresult$y2$coefficients),
                      nrow=2, ncol=2, byrow=TRUE)
-Y_fin <- c(miami_w_2023[5832], tampa_w_2023[5832])
+Y_fin <- c(y[5832], y2[5832])
 
 var_forecast <- function(tau){
   fore <- Y_fin
@@ -241,13 +275,14 @@ for(i in 1:504){
   tampaforecast[i] <- var_forecast(i)[2]
 }
 
-plot(xts[5000:length(xts)], c(miami_w_2023, miamiforecast)[5000:length(xts)], 
+par(mfrow=c(1,2))
+plot(xts[5000:length(xts)], c(y, miamiforecast)[5000:length(xts)], 
      type="l", main="Miami", xlab="Index", ylab="Speed")
-abline(v = length(miami_w_2023), col="red")
+abline(v = length(miami_w_2023), col="red", lty=2)
 
-plot(xts[5000:length(xts)], c(tampa_w_2023, tampaforecast)[5000:length(xts)], 
+plot(xts[5000:length(xts)], c(y2, tampaforecast)[5000:length(xts)], 
      type="l", main="Tampa", xlab="Index", ylab="Speed")
-abline(v = length(tampa_w_2023), col="red")
+abline(v = length(tampa_w_2023), col="red", lty=2)
 
 y_var_res <- ys_var$varresult$y$residuals
 y2_var_res <- ys_var$varresult$y2$residuals
