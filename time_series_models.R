@@ -136,7 +136,7 @@ y23 <- y2_model$coef[1]*y22 + y2_model$coef[2]*y21 + y2_model$coef[3]*y2[t] + y2
 y24 <- y2_model$coef[1]*y23 + y2_model$coef[2]*y22 + y2_model$coef[3]*y21 + y2_model$coef[4]*y2[t] + y2_model$coef[5]*y2[t-1]
 y25 <- y2_model$coef[1]*y24 + y2_model$coef[2]*y23 + y2_model$coef[3]*y22 + y2_model$coef[4]*y21 + y2_model$coef[5]*y2[t]
 
-# ARIMA check forecasting inside time series lines up with what was predicted
+# ARIMA check forecasting inside time series lines up with what was observed
 # consider after the first 1000 observations
 k <- 1000
 y11 <- y[k] + y_model$coef[1]*y_model$residuals[k] + y_model$coef[2]*y_model$residuals[k-1] + y_model$coef[3]*y_model$residuals[k-2] + y_model$coef[4]*y_model$residuals[k-3]
@@ -168,7 +168,9 @@ lines(yts[1001:1500], y2preds, col="blue")
 abline(v = 1000, col="red", lty=2)
 
 
-# ARMA GARCH residuals
+# ARMA GARCH
+
+# ARMA GARCH residuals distribution
 garch_res_ghyp <- stepAIC.ghyp(cbind(y_garch@fit$residuals, y2_garch@fit$residuals), silent = TRUE)
 garch_res_ghyp$best.model
 
@@ -186,6 +188,27 @@ y23g <- y2_armac[1]*y22 + y2_armac[2]*y21 + y2_armac[3]*y2[t] + y2_armac[4]*y2[t
 y24g <- y2_armac[1]*y23 + y2_armac[2]*y22 + y2_armac[3]*y21 + y2_armac[4]*y2[t] + y2_armac[5]*y2[t-1]
 y25g <- y2_armac[1]*y24 + y2_armac[2]*y23 + y2_armac[3]*y22 + y2_armac[4]*y21 + y2_armac[5]*y2[t]
 
+y1predsg <- c(y11g, y12g, y13g, y14g, y15g, rep(0, times=495))
+for(i in 6:500){
+  y1predsg[i] <- y_armac[1]*y1predsg[i-1]
+}
+
+y2predsg <- c(y21g, y22g, y23g, y24g, y25g, rep(0, times=495))
+for(i in 6:500){
+  y2predsg[i] <- y2_armac[1]*y2preds[i-1] + y2_armac[2]*y2preds[i-2] + y2_armac[3]*y2preds[i-3] + y2_armac[4]*y2preds[i-4] + y2_armac[5]*y2preds[i-5]
+}
+
+yts <- 1:1500
+plot(yts, y[1:1500], type="l", xlab="Index", ylab="Speed", main="Miami")
+lines(yts[1001:1500], y1predsg, col="blue")
+abline(v = 1000, col="red", lty=2)
+
+plot(yts, y2[1:1500], type="l", xlab="Index", ylab="Speed", main="Tampa")
+lines(yts[1001:1500], y2preds, col="blue")
+abline(v = 1000, col="red", lty=2)
+
+
+
 #ARMA GARCH conditional variance forecasting
 sigma1 <- coredata(sigma(y_garch))[t,1]
 sigma2 <- coredata(sigma(y2_garch))[t,1]
@@ -200,6 +223,21 @@ s22 <- y2_garchc[1]*(1 + (y2_garchc[2] + y2_garchc[3])) + (y2_garchc[2] + y2_gar
 s23 <- y2_garchc[1]*(1 + (y2_garchc[2] + y2_garchc[3]) + (y2_garchc[2] + y2_garchc[3])^2) + (y2_garchc[2]*y2_gar_res[t]^2 + y2_garchc[3]*sigma2^2)*(y2_garchc[2] + y2_garchc[3])^2
 s24 <- y2_garchc[1]*(1 + (y2_garchc[2] + y2_garchc[3]) + (y2_garchc[2] + y2_garchc[3])^2 + (y2_garchc[2] + y2_garchc[3])^3) + (y2_garchc[2]*y2_gar_res[t]^2 + y2_garchc[3]*sigma2^2)*(y2_garchc[2] + y2_garchc[3])^3
 s25 <- y2_garchc[1]*(1 + (y2_garchc[2] + y2_garchc[3]) + (y2_garchc[2] + y2_garchc[3])^2 + (y2_garchc[2] + y2_garchc[3])^3 + (y2_garchc[2] + y2_garchc[3])^4) + (y2_garchc[2]*y2_gar_res[t]^2 + y2_garchc[3]*sigma2^2)*(y2_garchc[2] + y2_garchc[3])^4
+
+# check forecasting inside time series lines up with what was observed
+k <- 1000
+
+y11g <- y_armac[1]*y[k] + y_armac[2]*y_gar_res[k] + y_armac[3]*y_gar_res[k-1] + y_armac[4]*y_gar_res[k-2] + y_armac[5]*y_gar_res[k-3]
+y12g <- y_armac[1]*y11 + y_armac[3]*y_gar_res[k] + y_armac[4]*y_gar_res[k-1] + y_armac[5]*y_gar_res[k-2]
+y13g <- y_armac[1]*y12 + y_armac[4]*y_gar_res[k] + y_armac[5]*y_gar_res[k-1]
+y14g <- y_armac[1]*y13 + y_armac[5]*y_gar_res[k] 
+y15g <- y_armac[1]*y14
+y21g <- y2_armac[1]*y2[k] + y2_armac[2]*y2[k-1] + y2_armac[3]*y2[k-2] + y2_armac[4]*y2[k-3] + y2_armac[5]*y2[k-4] + y2_armac[6]*y2_gar_res[k] + y2_armac[7]*y2_gar_res[k-1]
+y22g <- y2_armac[1]*y21 + y2_armac[2]*y2[k] + y2_armac[3]*y2[k-1] + y2_armac[4]*y2[k-2] + y2_armac[5]*y2[k-3] + y2_armac[7]*y2_gar_res[k]
+y23g <- y2_armac[1]*y22 + y2_armac[2]*y21 + y2_armac[3]*y2[k] + y2_armac[4]*y2[k-1] + y2_armac[5]*y2[k-2]
+y24g <- y2_armac[1]*y23 + y2_armac[2]*y22 + y2_armac[3]*y21 + y2_armac[4]*y2[k] + y2_armac[5]*y2[k-1]
+y25g <- y2_armac[1]*y24 + y2_armac[2]*y23 + y2_armac[3]*y22 + y2_armac[4]*y21 + y2_armac[5]*y2[k]
+
 
 # conditional variance formula
 miami_s_fc <- function(tau){
