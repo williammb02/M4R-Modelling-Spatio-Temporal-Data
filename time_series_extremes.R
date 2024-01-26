@@ -132,3 +132,6 @@ rlpot <- function(x, m){
 c(rlpot(y_model$residuals, 24), rlpot(y_model$residuals, 168), rlpot(y2_model$residuals, 24), rlpot(y2_model$residuals, 168))
 c(rlpot(y_gar_res, 24), rlpot(y_gar_res, 168), rlpot(y2_gar_res, 24), rlpot(y2_gar_res, 168))
 c(rlpot(y_var_res, 24), rlpot(y_var_res, 168), rlpot(y2_var_res, 24), rlpot(y2_var_res, 168))
+
+
+# extremogram 

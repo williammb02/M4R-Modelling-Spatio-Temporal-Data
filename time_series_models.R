@@ -328,6 +328,37 @@ y2_var_res <- ys_var$varresult$y2$residuals
 var_res_mvn <- mvn("XXX", cbind(y_var_res, y2_var_res))
 var_res_ghyp <- stepAIC.ghyp(cbind(y_var_res, y2_var_res), silent=TRUE)
 
+# tallahassee ARMA-GARCH model
+quadfit3 <- lm(talla_w_2023 ~ poly(t, 2, raw=TRUE))
+z3 <- talla_w_2023 - quadfit3$fitted.values
+key_freqs3 <- c()
+for(i in 1:length(my_periodogram(z3))){
+  if(my_periodogram(z3)[i] > 31.5){
+    key_freqs3 <- c(key_freqs3, freq[i])
+  }
+}
+key_freqs3 <- key_freqs3[11:20]
+seasonqfit3 <- lm(create_formula(key_freqs3))
+y3 <- z3 - seasonqfit3$fitted.values
+# fit arima model to y3
+y3_model <- auto.arima(y3, ic = "aicc")
+# fit arma garch model to y3 using arima choice 
+y3spec <- ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,1)), 
+                     mean.model=list(armaOrder = c(1,1), include.mean=TRUE))
+y3_garch <- ugarchfit(spec = y3spec, data = y3, solver="hybrid")
+y3_garch@fit$solver$sol$par
+y3_armac <- y3_garch@fit$solver$sol$par[2:3]
+y3_garchc <- y3_garch@fit$solver$sol$par[4:6]
+y3_gar_res <- y3_garch@fit$residuals
+
+# miami, talla
+garch2_res_ghyp <- stepAIC.ghyp(cbind(y_garch@fit$residuals, y3_garch@fit$residuals), silent = TRUE)
+garch2_res_ghyp$best.model
+
+# tampa, talla
+garch3_res_ghyp <- stepAIC.ghyp(cbind(y2_garch@fit$residuals, y3_garch@fit$residuals), silent = TRUE)
+garch3_res_ghyp$best.model
+
 
 
 # TAIL DEPENDENCE
