@@ -2,6 +2,8 @@ miami_w_2023 <- sqrt(miami_u10_2023^2 + miami_v10_2023^2)
 tampa_w_2023 <- sqrt(tampa_u10_2023^2 + tampa_v10_2023^2)
 talla_w_2023 <- sqrt(talla_u10_2023^2 + talla_v10_2023^2)
 
+set.seed(5)
+
 # generate a formula to use for finding coefficients
 create_formula <- function(key_freqs) {
   sentence <- ""
@@ -411,6 +413,23 @@ tde_lag_2(y_model$residuals, y2_model$residuals, 0.95, 0)
 tde_lag_2(y_gar_res, y2_gar_res, 0.8, 0)
 tde_lag_2(y_gar_res, y2_gar_res, 0.9, 0)
 tde_lag_2(y_gar_res, y2_gar_res, 0.95, 0)
+
+# garch probabilities for all models
+tde_lag_2(y_gar_res, y2_gar_res, 0.8, 0)[3]
+tde_lag_2(y_gar_res, y2_gar_res, 0.9, 0)[3]
+tde_lag_2(y_gar_res, y2_gar_res, 0.95, 0)[3]
+
+tde_lag_2(y_gar_res, y3_gar_res, 0.8, 0)[3]
+tde_lag_2(y_gar_res, y3_gar_res, 0.9, 0)[3]
+tde_lag_2(y_gar_res, y3_gar_res, 0.95, 0)[3]
+
+tde_lag_2(y2_gar_res, y3_gar_res, 0.8, 0)[3]
+tde_lag_2(y2_gar_res, y3_gar_res, 0.9, 0)[3]
+tde_lag_2(y2_gar_res, y3_gar_res, 0.95, 0)[3]
+# add a lag
+tde_lag_2(y_gar_res, y2_gar_res, 0.9, 24)[3]
+tde_lag_2(y2_gar_res, y3_gar_res, 0.9, 24)[3]
+tde_lag_2(y_gar_res, y3_gar_res, 0.9, 48)[3]
 
 tde_lag_2(y_var_res, y2_var_res, 0.8, 0)
 tde_lag_2(y_var_res, y2_var_res, 0.9, 0)
