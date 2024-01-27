@@ -101,3 +101,17 @@ talla_tp_2023 <- as.vector(nc.get.var.subset.by.axes(talla_tp_2023_nc, "tp", axi
 talla_u10_2023 <- as.vector(nc.get.var.subset.by.axes(talla_u10_2023_nc, "u10", axis.indices=list(X=1,Y=1)))
 talla_v10_2023 <- as.vector(nc.get.var.subset.by.axes(talla_v10_2023_nc, "v10", axis.indices=list(X=1,Y=1)))
 
+jack_u10_2023_nc <- nc_open('jack_u10_2023.nc')
+jack_v10_2023_nc <- nc_open('jack_v10_2023.nc')
+jack_u10_2023 <- as.vector(nc.get.var.subset.by.axes(jack_u10_2023_nc, "u10", axis.indices=list(X=1,Y=1)))
+jack_v10_2023 <- as.vector(nc.get.var.subset.by.axes(jack_v10_2023_nc, "v10", axis.indices=list(X=1,Y=1)))
+
+orla_u10_2023_nc <- nc_open('orla_u10_2023.nc')
+orla_v10_2023_nc <- nc_open('orla_v10_2023.nc')
+orla_u10_2023 <- as.vector(nc.get.var.subset.by.axes(orla_u10_2023_nc, "u10", axis.indices=list(X=1,Y=1)))
+orla_v10_2023 <- as.vector(nc.get.var.subset.by.axes(orla_v10_2023_nc, "v10", axis.indices=list(X=1,Y=1)))
+
+fort_u10_2023_nc <- nc_open('fort_u10_2023.nc')
+fort_v10_2023_nc <- nc_open('fort_v10_2023.nc')
+fort_u10_2023 <- as.vector(nc.get.var.subset.by.axes(fort_u10_2023_nc, "u10", axis.indices=list(X=1,Y=1)))
+fort_v10_2023 <- as.vector(nc.get.var.subset.by.axes(fort_v10_2023_nc, "v10", axis.indices=list(X=1,Y=1)))

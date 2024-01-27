@@ -2,6 +2,10 @@ miami_w_2023 <- sqrt(miami_u10_2023^2 + miami_v10_2023^2)
 tampa_w_2023 <- sqrt(tampa_u10_2023^2 + tampa_v10_2023^2)
 talla_w_2023 <- sqrt(talla_u10_2023^2 + talla_v10_2023^2)
 
+jack_w_2023 <- sqrt(jack_u10_2023^2 + jack_v10_2023^2)
+orla_w_2023 <- sqrt(orla_u10_2023^2 + orla_v10_2023^2)
+fort_w_2023 <- sqrt(fort_u10_2023^2 + fort_v10_2023^2)
+
 set.seed(5)
 
 # generate a formula to use for finding coefficients
