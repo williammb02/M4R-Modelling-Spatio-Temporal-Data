@@ -8,6 +8,102 @@ taildep.test(y_model$residuals, y2_model$residuals, cthresh = -0.05)
 taildep.test(y_gar_res, y2_gar_res, cthresh = -0.05)
 taildep.test(y_var_res, y2_var_res, cthresh = -0.05)
 
+# TAIL DEPENDENCE
+tde_lag <- function(u, tau){
+  q1 <- quantile(miami_w_2023, u)
+  q2 <- quantile(tampa_w_2023, u)
+  num <- 0
+  den <- 0
+  l <- length(miami_w_2023)
+  for (i in 1:(l-tau)){
+    if ((miami_w_2023[i] > u) & (tampa_w_2023[i+tau] > u)){
+      num <- num + 1
+    }
+    if (miami_w_2023[i] > u){
+      den <- den + 1
+    }
+  }
+  return(c(num/l, den/l, num/den))
+}
+
+tde_lag(0.8, 0)
+tde_lag(0.9, 0)
+tde_lag(0.95, 0)
+
+tde_lag(0.95, 12)
+tde_lag(0.95, 24)
+tde_lag(0.95, 168)
+
+tde_lag_2 <- function(x, y, u, tau){
+  q1 <- quantile(x, u)
+  q2 <- quantile(y, u)
+  num <- 0
+  den <- 0
+  l <- length(x)
+  for (i in 1:(l-tau)){
+    if ((x[i] > u) & (y[i+tau] > u)){
+      num <- num + 1
+    }
+    if (x[i] > u){
+      den <- den + 1
+    }
+  }
+  return(c(num/l, den/l, num/den))
+}
+
+tde_lag_2(y_model$residuals, y2_model$residuals, 0.8, 0)
+tde_lag_2(y_model$residuals, y2_model$residuals, 0.9, 0)
+tde_lag_2(y_model$residuals, y2_model$residuals, 0.95, 0)
+
+tde_lag_2(y_gar_res, y2_gar_res, 0.8, 0)
+tde_lag_2(y_gar_res, y2_gar_res, 0.9, 0)
+tde_lag_2(y_gar_res, y2_gar_res, 0.95, 0)
+
+# garch probabilities for all models
+tde_lag_2(y_gar_res, y2_gar_res, 0.8, 0)[3]
+tde_lag_2(y_gar_res, y2_gar_res, 0.9, 0)[3]
+tde_lag_2(y_gar_res, y2_gar_res, 0.95, 0)[3]
+
+tde_lag_2(y_gar_res, y3_gar_res, 0.8, 0)[3]
+tde_lag_2(y_gar_res, y3_gar_res, 0.9, 0)[3]
+tde_lag_2(y_gar_res, y3_gar_res, 0.95, 0)[3]
+
+tde_lag_2(y2_gar_res, y3_gar_res, 0.8, 0)[3]
+tde_lag_2(y2_gar_res, y3_gar_res, 0.9, 0)[3]
+tde_lag_2(y2_gar_res, y3_gar_res, 0.95, 0)[3]
+# add a lag
+tde_lag_2(y_gar_res, y2_gar_res, 0.9, 24)[3]
+tde_lag_2(y2_gar_res, y3_gar_res, 0.9, 24)[3]
+tde_lag_2(y_gar_res, y3_gar_res, 0.9, 48)[3]
+
+tde_lag_2(y_var_res, y2_var_res, 0.8, 0)
+tde_lag_2(y_var_res, y2_var_res, 0.9, 0)
+tde_lag_2(y_var_res, y2_var_res, 0.95, 0)
+
+
+# CDF of ghyp distributions
+q <- c(0.8, 0.9, 0.95)
+
+set.seed(5)
+
+pghyp(c(quantile(y_model$residuals, 0.8), quantile(y2_model$residuals, 0.8)), object = res_ghyp$best.model, lower.tail = FALSE)/0.2
+pghyp(c(quantile(y_model$residuals, 0.9), quantile(y2_model$residuals, 0.9)), object = res_ghyp$best.model, lower.tail = FALSE)/0.1
+pghyp(c(quantile(y_model$residuals, 0.95), quantile(y2_model$residuals, 0.95)), object = res_ghyp$best.model, lower.tail = FALSE)/0.05
+
+pghyp(c(quantile(y_gar_res, 0.8), quantile(y2_gar_res, 0.8)), object = garch_res_ghyp$best.model, lower.tail = FALSE)/0.2
+pghyp(c(quantile(y_gar_res, 0.9), quantile(y2_gar_res, 0.9)), object = garch_res_ghyp$best.model, lower.tail = FALSE)/0.1
+pghyp(c(quantile(y_gar_res, 0.95), quantile(y2_gar_res, 0.95)), object = garch_res_ghyp$best.model, lower.tail = FALSE)/0.05
+
+pghyp(c(quantile(y_var_res, 0.8), quantile(y2_var_res, 0.8)), object = var_res_ghyp$best.model, lower.tail = FALSE)/0.2
+pghyp(c(quantile(y_var_res, 0.9), quantile(y2_var_res, 0.9)), object = var_res_ghyp$best.model, lower.tail = FALSE)/0.1
+pghyp(c(quantile(y_var_res, 0.95), quantile(y2_var_res, 0.95)), object = var_res_ghyp$best.model, lower.tail = FALSE)/0.05
+
+
+
+
+
+
+
 
 # look at maximum daily rainfall
 daily_max <- function(x){
