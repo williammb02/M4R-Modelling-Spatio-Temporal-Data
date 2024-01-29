@@ -370,7 +370,7 @@ quadfit4 <- lm(jack_w_2023 ~ poly(t, 2, raw=TRUE))
 z4 <- jack_w_2023 - quadfit4$fitted.values
 key_freqs4 <- c()
 for(i in 1:length(my_periodogram(z4))){
-  if(my_periodogram(z4)[i] > 31.5){
+  if(my_periodogram(z4)[i] > 47){
     key_freqs4 <- c(key_freqs4, freq[i])
   }
 }
@@ -381,7 +381,7 @@ y4 <- z4 - seasonqfit4$fitted.values
 y4_model <- auto.arima(y4, ic = "aicc")
 # fit arma garch model to y4 using arima choice 
 y4spec <- ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,1)), 
-                     mean.model=list(armaOrder = c(1,1), include.mean=TRUE))
+                     mean.model=list(armaOrder = c(2,1), include.mean=TRUE))
 y4_garch <- ugarchfit(spec = y4spec, data = y4, solver="hybrid")
 y4_garch@fit$solver$sol$par
 y4_gar_res <- y4_garch@fit$residuals
@@ -391,7 +391,7 @@ quadfit5 <- lm(orla_w_2023 ~ poly(t, 2, raw=TRUE))
 z5 <- orla_w_2023 - quadfit5$fitted.values
 key_freqs5 <- c()
 for(i in 1:length(my_periodogram(z5))){
-  if(my_periodogram(z5)[i] > 31.5){
+  if(my_periodogram(z5)[i] > 77){
     key_freqs5 <- c(key_freqs5, freq[i])
   }
 }
@@ -412,7 +412,7 @@ quadfit6 <- lm(fort_w_2023 ~ poly(t, 2, raw=TRUE))
 z6 <- fort_w_2023 - quadfit6$fitted.values
 key_freqs6 <- c()
 for(i in 1:length(my_periodogram(z6))){
-  if(my_periodogram(z6)[i] > 31.5){
+  if(my_periodogram(z6)[i] > 97.75){
     key_freqs6 <- c(key_freqs6, freq[i])
   }
 }
@@ -423,7 +423,7 @@ y6 <- z6 - seasonqfit6$fitted.values
 y6_model <- auto.arima(y6, ic = "aicc")
 # fit arma garch model to y6 using arima choice 
 y6spec <- ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,1)), 
-                     mean.model=list(armaOrder = c(1,1), include.mean=TRUE))
+                     mean.model=list(armaOrder = c(3,1), include.mean=TRUE))
 y6_garch <- ugarchfit(spec = y6spec, data = y6, solver="hybrid")
 y6_garch@fit$solver$sol$par
 y6_gar_res <- y6_garch@fit$residuals
