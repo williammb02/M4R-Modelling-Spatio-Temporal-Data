@@ -10,8 +10,10 @@ cop_fit1 <- RVineStructureSelect(as.copuladata(cop_res))
 
 summary(cop_fit1)
 
-
+# method by rescaling everything
 copres <- cbind(y_gar_res, y2_gar_res, y3_gar_res, y4_gar_res, y5_gar_res, y6_gar_res)
 copres <- copres - min(copres)
 copres <- copres / max(copres)
 cop_fit2 <- RVineStructureSelect(as.copuladata(copres))
+
+# need a method using the probability integral transform?

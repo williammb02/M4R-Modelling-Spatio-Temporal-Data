@@ -231,3 +231,11 @@ c(rlpot(y_var_res, 24), rlpot(y_var_res, 168), rlpot(y2_var_res, 24), rlpot(y2_v
 
 
 # extremogram 
+extremogram2(cbind(y_gar_res, y2_gar_res), 0.95, 0.95, 300, 1)
+extremogram2(cbind(y2_gar_res, y_gar_res), 0.95, 0.95, 300, 1)
+
+extremogram2(cbind(y_gar_res, y3_gar_res), 0.95, 0.95, 300, 1)
+extremogram2(cbind(y3_gar_res, y_gar_res), 0.95, 0.95, 300, 1)
+
+extremogram2(cbind(y2_gar_res, y3_gar_res), 0.95, 0.95, 300, 1)
+extremogram2(cbind(y3_gar_res, y2_gar_res), 0.95, 0.95, 300, 1)
