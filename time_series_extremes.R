@@ -94,6 +94,14 @@ pghyp(c(quantile(y_gar_res, 0.8), quantile(y2_gar_res, 0.8)), object = garch_res
 pghyp(c(quantile(y_gar_res, 0.9), quantile(y2_gar_res, 0.9)), object = garch_res_ghyp$best.model, lower.tail = FALSE)/0.1
 pghyp(c(quantile(y_gar_res, 0.95), quantile(y2_gar_res, 0.95)), object = garch_res_ghyp$best.model, lower.tail = FALSE)/0.05
 
+pghyp(c(quantile(y_gar_res, 0.8), quantile(y3_gar_res, 0.8)), object = garch2_res_ghyp$best.model, lower.tail = FALSE)/0.2
+pghyp(c(quantile(y_gar_res, 0.9), quantile(y3_gar_res, 0.9)), object = garch2_res_ghyp$best.model, lower.tail = FALSE)/0.1
+pghyp(c(quantile(y_gar_res, 0.95), quantile(y3_gar_res, 0.95)), object = garch2_res_ghyp$best.model, lower.tail = FALSE)/0.05
+
+pghyp(c(quantile(y2_gar_res, 0.8), quantile(y3_gar_res, 0.8)), object = garch3_res_ghyp$best.model, lower.tail = FALSE)/0.2
+pghyp(c(quantile(y2_gar_res, 0.9), quantile(y3_gar_res, 0.9)), object = garch3_res_ghyp$best.model, lower.tail = FALSE)/0.1
+pghyp(c(quantile(y2_gar_res, 0.95), quantile(y3_gar_res, 0.95)), object = garch3_res_ghyp$best.model, lower.tail = FALSE)/0.05
+
 pghyp(c(quantile(y_var_res, 0.8), quantile(y2_var_res, 0.8)), object = var_res_ghyp$best.model, lower.tail = FALSE)/0.2
 pghyp(c(quantile(y_var_res, 0.9), quantile(y2_var_res, 0.9)), object = var_res_ghyp$best.model, lower.tail = FALSE)/0.1
 pghyp(c(quantile(y_var_res, 0.95), quantile(y2_var_res, 0.95)), object = var_res_ghyp$best.model, lower.tail = FALSE)/0.05

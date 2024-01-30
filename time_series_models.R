@@ -334,6 +334,8 @@ y2_var_res <- ys_var$varresult$y2$residuals
 var_res_mvn <- mvn("XXX", cbind(y_var_res, y2_var_res))
 var_res_ghyp <- stepAIC.ghyp(cbind(y_var_res, y2_var_res), silent=TRUE)
 
+
+
 # tallahassee ARMA-GARCH model
 quadfit3 <- lm(talla_w_2023 ~ poly(t, 2, raw=TRUE))
 z3 <- talla_w_2023 - quadfit3$fitted.values
