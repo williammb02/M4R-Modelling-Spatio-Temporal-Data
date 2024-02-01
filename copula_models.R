@@ -1,5 +1,6 @@
 library(VineCopula)
 library(network)
+library(kdecopula)
 
 # fit a copula model to residuals at 3 locations
 
@@ -17,3 +18,19 @@ copres <- copres / max(copres)
 cop_fit2 <- RVineStructureSelect(as.copuladata(copres))
 
 # need a method using the probability integral transform?
+g1 <- stepAIC.ghyp(y_gar_res, silent=TRUE)
+g2 <- stepAIC.ghyp(y2_gar_res, silent=TRUE)
+g3 <- stepAIC.ghyp(y3_gar_res, silent=TRUE)
+g4 <- stepAIC.ghyp(y4_gar_res, silent=TRUE)
+g5 <- stepAIC.ghyp(y5_gar_res, silent=TRUE)
+g6 <- stepAIC.ghyp(y6_gar_res, silent=TRUE)
+
+e1 <- pghyp(y_gar_res, object=g1$best.model)
+e2 <- pghyp(y2_gar_res, object=g2$best.model)
+e3 <- pghyp(y3_gar_res, object=g3$best.model)
+e4 <- pghyp(y4_gar_res, object=g4$best.model)
+e5 <- pghyp(y5_gar_res, object=g5$best.model)
+e6 <- pghyp(y6_gar_res, object=g6$best.model)
+
+copres2 <- cbind(e1,e2,e3,e4,e5,e6)
+cop_fit3 <- RVineStructureSelect(copres2)
