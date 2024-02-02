@@ -17,7 +17,7 @@ copres <- copres - min(copres)
 copres <- copres / max(copres)
 cop_fit2 <- RVineStructureSelect(as.copuladata(copres))
 
-# need a method using the probability integral transform?
+# method using the probability integral transform
 g1 <- stepAIC.ghyp(y_gar_res, silent=TRUE)
 g2 <- stepAIC.ghyp(y2_gar_res, silent=TRUE)
 g3 <- stepAIC.ghyp(y3_gar_res, silent=TRUE)

@@ -247,3 +247,6 @@ extremogram2(cbind(y3_gar_res, y_gar_res), 0.95, 0.95, 300, 1)
 
 extremogram2(cbind(y2_gar_res, y3_gar_res), 0.95, 0.95, 300, 1)
 extremogram2(cbind(y3_gar_res, y2_gar_res), 0.95, 0.95, 300, 1)
+
+
+extremogram2(cbind(y_gar_res_new, y2_gar_res_new), 0.95, 0.95, 300, 1)

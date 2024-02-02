@@ -429,3 +429,27 @@ y6spec <- ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,1)
 y6_garch <- ugarchfit(spec = y6spec, data = y6, solver="hybrid")
 y6_garch@fit$solver$sol$par
 y6_gar_res <- y6_garch@fit$residuals
+
+
+
+
+# try fitting another seasonal component to the residuals
+key_freqs11 <- c()
+for(i in 1:length(my_periodogram(y_gar_res))){
+  if(my_periodogram(y_gar_res)[i] > 1.9){
+    key_freqs11 <- c(key_freqs11, freq[i])
+  }
+}
+key_freqs11 <- key_freqs11[12:21]
+seasongar1fit <- lm(create_formula(key_freqs11))
+y_gar_res_new <- y_gar_res - seasongar1fit$fitted.values
+
+key_freqs22 <- c()
+for(i in 1:length(my_periodogram(y2_gar_res))){
+  if(my_periodogram(y2_gar_res)[i] > 1.9){
+    key_freqs22 <- c(key_freqs22, freq[i])
+  }
+}
+key_freqs22 <- key_freqs22[11:20]
+seasongar2fit <- lm(create_formula(key_freqs22))
+y2_gar_res_new <- y2_gar_res - seasongar2fit$fitted.values
