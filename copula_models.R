@@ -49,3 +49,9 @@ plot(cop_fit3c)
 c(cop_fit3$AIC, cop_fit3$BIC) < c(cop_fit3c$AIC, cop_fit3c$BIC)
 
 RVineVuongTest(copres2, cop_fit3c, cop_fit3)
+
+# simulate
+set.seed(2024) 
+
+tests <- RVineSim(5832, cop_fit3)
+hist(qghyp(tests[,1], object=g1$best.model), breaks=100)
