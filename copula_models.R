@@ -34,3 +34,18 @@ e6 <- pghyp(y6_gar_res, object=g6$best.model)
 
 copres2 <- cbind(e1,e2,e3,e4,e5,e6)
 cop_fit3 <- RVineStructureSelect(copres2)
+cop_fit3c <- RVineStructureSelect(copres2, type = "CVine")
+
+cop_pdf <- RVinePDF(copres2, cop_fit3)
+
+# plots
+contour(cop_fit3)
+plot(cop_fit3)
+
+contour(cop_fit3c)
+plot(cop_fit3c)
+
+# hypothesis test of two copulas
+c(cop_fit3$AIC, cop_fit3$BIC) < c(cop_fit3c$AIC, cop_fit3c$BIC)
+
+RVineVuongTest(copres2, cop_fit3c, cop_fit3)

@@ -446,7 +446,7 @@ y_gar_res_new <- y_gar_res - seasongar1fit$fitted.values
 
 key_freqs22 <- c()
 for(i in 1:length(my_periodogram(y2_gar_res))){
-  if(my_periodogram(y2_gar_res)[i] > 1.9){
+  if(my_periodogram(y2_gar_res)[i] > 1.8){
     key_freqs22 <- c(key_freqs22, freq[i])
   }
 }
