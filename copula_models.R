@@ -1,6 +1,8 @@
 library(VineCopula)
 library(network)
 library(kdecopula)
+library(rvinecopulib)
+library(svines)
 
 # fit a copula model to residuals at 3 locations
 
