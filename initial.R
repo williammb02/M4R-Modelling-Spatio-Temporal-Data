@@ -115,22 +115,3 @@ fort_u10_2023_nc <- nc_open('fort_u10_2023.nc')
 fort_v10_2023_nc <- nc_open('fort_v10_2023.nc')
 fort_u10_2023 <- as.vector(nc.get.var.subset.by.axes(fort_u10_2023_nc, "u10", axis.indices=list(X=1,Y=1)))
 fort_v10_2023 <- as.vector(nc.get.var.subset.by.axes(fort_v10_2023_nc, "v10", axis.indices=list(X=1,Y=1)))
-
-# visualise location of all the cities in Florida
-flo <- map_data("state", region = "florida")
-cities <- data.frame(
-  city = c("Miami (1)", "Tampa (2)", "Tallahassee (3)", "Jacksonville (4)", "Orlando (5)", "Fort Myers (6)"),
-  lon = c(-80.2, -82.5, -84.2, -81.7, -81.4, -81.9),
-  lat = c(25.8, 28.0, 30.4, 30.3, 28.5, 26.6)
-)
-
-ggplot() +
-  ggtitle("Map of Florida and Cities in the Copula Models") +
-  geom_polygon(data = flo, aes(x = long, y = lat, group = group), 
-               fill = "grey", color = "black") +
-  geom_point(data = cities, aes(x = lon, y = lat), color = "red", size = 3) +
-  geom_text(data = cities, aes(x = lon, y = lat, label = city), 
-            color = "black", size = 4, vjust = -1) +
-  coord_fixed(ratio = 1.3) +
-  theme_void()
-

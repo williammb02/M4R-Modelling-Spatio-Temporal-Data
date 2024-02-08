@@ -55,3 +55,52 @@ set.seed(2024)
 
 tests <- RVineSim(5832, cop_fit3)
 hist(qghyp(tests[,1], object=g1$best.model), breaks=100)
+
+
+# visualise location of all the cities in Florida
+flo <- map_data("state", region = "florida")
+cities <- data.frame(
+  city = c("Miami (1)", "Tampa (2)", "Tallahassee (3)", "Jacksonville (4)", "Orlando (5)", "Fort Myers (6)"),
+  lon = c(-80.2, -82.5, -84.2, -81.7, -81.4, -81.9),
+  lat = c(25.8, 28.0, 30.4, 30.3, 28.5, 26.6)
+)
+edgesd <- data.frame(
+  from = c("Miami (1)", "Fort Meyers (6)", "Tampa (2)", "Orlando (5)", "Jacksonville (4)"),
+  to = c("Fort Meyers (6)", "Tampa(2)", "Orlando (5)", "Jacksonville (4)", "Tallahassee (3)"), 
+  lon = c(-80.2, -81.9, -82.5, -81.4, -81.7),
+  lat = c(25.8, 26.6, 28.0, 28.5, 30.3),
+  lon2 = c(-81.9, -82.5, -81.4, -81.7, -84.2),
+  lat2 = c(26.6, 28.0, 28.5, 30.3, 30.4)
+)
+edgesc <- data.frame(
+  from = c("Orlando (5)", "Orlando (5)", "Orlando (5)", "Orlando (5)", "Orlando (5)"),
+  to = c("Miami (1)", "Tampa (2)", "Tallahassee (3)", "Jacksonville (4)", "Fort Meyers (6)"),
+  lon = c(-81.4, -81.4, -81.4, -81.4, -81.4),
+  lat = c(28.5, 28.5, 28.5, 28.5, 28.5),
+  lon2 = c(-80.2, -82.5, -84.2, -81.7, -81.9),
+  lat2 = c(25.8, 28.0, 30.4, 30.3, 26.6)
+)
+
+ggplot() +
+  ggtitle("Map of Florida and Cities in the D-Vine Copula Model") +
+  geom_polygon(data = flo, aes(x = long, y = lat, group = group), 
+               fill = "grey", color = "black") +
+  geom_point(data = cities, aes(x = lon, y = lat), color = "red", size = 3) +
+  geom_segment(data = edgesd, 
+               aes(x = lon, y = lat, xend = lon2, yend = lat2, group = NULL),
+               color = "red", size = 1) +
+  geom_text(data = cities, aes(x = lon, y = lat, label = city), 
+            color = "black", size = 4, vjust = -1) +
+  coord_fixed(ratio = 1.3)
+  
+ggplot() +
+  ggtitle("Map of Florida and Cities in the C-Vine Copula Model") +
+  geom_polygon(data = flo, aes(x = long, y = lat, group = group), 
+               fill = "grey", color = "black") +
+  geom_point(data = cities, aes(x = lon, y = lat), color = "red", size = 3) +
+  geom_segment(data = edgesc, 
+               aes(x = lon, y = lat, xend = lon2, yend = lat2, group = NULL),
+               color = "red", size = 1) +
+  geom_text(data = cities, aes(x = lon, y = lat, label = city), 
+            color = "black", size = 4, vjust = -1) +
+  coord_fixed(ratio = 1.3)
