@@ -70,24 +70,34 @@ g55 <- stepAIC.ghyp(y5, silent=TRUE)
 g66 <- stepAIC.ghyp(y6, silent=TRUE)
 
 # take one day of data
-y11 <- pghyp(y[1:24], object=g11$best.model)
-y22 <- pghyp(y2[1:24], object=g22$best.model)
-y33 <- pghyp(y3[1:24], object=g33$best.model)
-y44 <- pghyp(y4[1:24], object=g44$best.model)
-y55 <- pghyp(y5[1:24], object=g55$best.model)
-y66 <- pghyp(y6[1:24], object=g66$best.model)
+y11o <- pghyp(y[1:24], object=g11$best.model)
+y22o <- pghyp(y2[1:24], object=g22$best.model)
+y33o <- pghyp(y3[1:24], object=g33$best.model)
+y44o <- pghyp(y4[1:24], object=g44$best.model)
+y55o <- pghyp(y5[1:24], object=g55$best.model)
+y66o <- pghyp(y6[1:24], object=g66$best.model)
+
+svinedatao <- cbind(y11o, y22o, y33o, y44o, y55o, y66o)
+colnames(svinedatao) <- c("M", "Tam", "Tal", "J", "O", "FM")
+s_fit1 <- svinecop(svinedatao, p=7)
+plot(s_fit1, var_names="use")
+
+# 1 month of data
+y11 <- pghyp(y[1:672], object=g11$best.model)
+y22 <- pghyp(y2[1:672], object=g22$best.model)
+y33 <- pghyp(y3[1:672], object=g33$best.model)
+y44 <- pghyp(y4[1:672], object=g44$best.model)
+y55 <- pghyp(y5[1:672], object=g55$best.model)
+y66 <- pghyp(y6[1:672], object=g66$best.model)
 
 svinedata <- cbind(y11, y22, y33, y44, y55, y66)
 colnames(svinedata) <- c("M", "Tam", "Tal", "J", "O", "FM")
-s_fit1 <- svinecop(svinedata, p=1)
 s_fit2 <- svinecop(svinedata, p=7)
-s_fit3 <- svinecop(svinedata, p=10)
-
-plot(s_fit1, var_names="use")
 plot(s_fit2, var_names="use")
 
 
-# visualise location of all the cities in Florida
+
+# ggplots to show the dependence 
 flo <- map_data("state", region = "florida")
 cities <- data.frame(
   city = c("Miami (1)", "Tampa (2)", "Tallahassee (3)", "Jacksonville (4)", "Orlando (5)", "Fort Myers (6)"),
@@ -110,13 +120,29 @@ edgesc <- data.frame(
   lon2 = c(-80.2, -82.5, -84.2, -81.7, -81.9),
   lat2 = c(25.8, 28.0, 30.4, 30.3, 26.6)
 )
-edgess <- data.frame(
-  from = c("Fort Meyers (6)", "Miami (1)", "Jacksonville (4)", "Jacksonville (4)", "Tampa (2)"),
-  to = c("Miami (1)", "Jacksonville (4)", "Tallahassee (3)", "Tampa (2)", "Orlando (5)"),
+edgess1 <- data.frame(
+  from = c("Fort Meyers", "Miami", "Jacksonville", "Jacksonville", "Tampa"),
+  to = c("Miami", "Jacksonville", "Tallahassee", "Tampa", "Orlando"),
   lon = c(-81.9, -80.2, -81.7, -81.7, -82.5),
   lat = c(26.6, 25.8, 30.3, 30.3, 28.0),
   lon2 = c(-80.2, -81.7, -84.2, -82.5, -81.4),
   lat2 = c(25.8, 30.3, 30.4, 28.0, 28.5)
+)
+edgess2 <- data.frame(
+  from = c("Miami", "Tampa", "Tampa", "Tampa", "Orlando"),
+  to = c("Tampa", "Tallahassee", "Fort Myers", "Orlando", "Jacksonville"),
+  lon = c(-80.2, -82.5, -82.5, -82.5, -81.4),
+  lat = c(25.8, 28.0, 28.0, 28.0, 28.5),
+  lon2 = c(-82.5, -84.2, -81.9, -81.4, -81.7),
+  lat2 = c(28.0, 30.4, 26.6, 28.5, 30.3)
+)
+edgess3 <- data.frame(
+  from = c("Miami", "Fort Meyers", "Tampa", "Orlando", "Jacksonville"),
+  to = c("Fort Meyers", "Tampa", "Orlando", "Jacksonville", "Tallahassee"), 
+  lon = c(-80.2, -81.9, -82.5, -81.4, -81.7),
+  lat = c(25.8, 26.6, 28.0, 28.5, 30.3),
+  lon2 = c(-81.9, -82.5, -81.4, -81.7, -84.2),
+  lat2 = c(26.6, 28.0, 28.5, 30.3, 30.4)
 )
 
 ggplot() +
@@ -142,13 +168,37 @@ ggplot() +
   geom_text(data = cities, aes(x = lon, y = lat, label = city), 
             color = "black", size = 4, vjust = -1) +
   coord_fixed(ratio = 1.3)
-
+#s1
 ggplot() +
   ggtitle("Map of Florida and Cities in the S-Vine Copula Model") +
   geom_polygon(data = flo, aes(x = long, y = lat, group = group), 
                fill = "grey", color = "black") +
   geom_point(data = cities, aes(x = lon, y = lat), color = "red", size = 3) +
-  geom_segment(data = edgess, 
+  geom_segment(data = edgess1, 
+               aes(x = lon, y = lat, xend = lon2, yend = lat2, group = NULL),
+               color = "red", size = 1) +
+  geom_text(data = cities, aes(x = lon, y = lat, label = city), 
+            color = "black", size = 4, vjust = -1) +
+  coord_fixed(ratio = 1.3)
+#s2
+ggplot() +
+  ggtitle("Map of Florida and Cities in the S-Vine Copula Model") +
+  geom_polygon(data = flo, aes(x = long, y = lat, group = group), 
+               fill = "grey", color = "black") +
+  geom_point(data = cities, aes(x = lon, y = lat), color = "red", size = 3) +
+  geom_segment(data = edgess2, 
+               aes(x = lon, y = lat, xend = lon2, yend = lat2, group = NULL),
+               color = "red", size = 1) +
+  geom_text(data = cities, aes(x = lon, y = lat, label = city), 
+            color = "black", size = 4, vjust = -1) +
+  coord_fixed(ratio = 1.3)
+#s3
+ggplot() +
+  ggtitle("Map of Florida and Cities in the S-Vine Copula Model") +
+  geom_polygon(data = flo, aes(x = long, y = lat, group = group), 
+               fill = "grey", color = "black") +
+  geom_point(data = cities, aes(x = lon, y = lat), color = "red", size = 3) +
+  geom_segment(data = edgess3, 
                aes(x = lon, y = lat, xend = lon2, yend = lat2, group = NULL),
                color = "red", size = 1) +
   geom_text(data = cities, aes(x = lon, y = lat, label = city), 
