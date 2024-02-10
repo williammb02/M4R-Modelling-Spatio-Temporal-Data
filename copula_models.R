@@ -3,6 +3,7 @@ library(network)
 library(kdecopula)
 library(rvinecopulib)
 library(svines)
+library(ggraph)
 
 # fit a copula model to residuals at 3 locations
 
@@ -35,6 +36,7 @@ e5 <- pghyp(y5_gar_res, object=g5$best.model)
 e6 <- pghyp(y6_gar_res, object=g6$best.model)
 
 copres2 <- cbind(e1,e2,e3,e4,e5,e6)
+colnames(copres2) <- c("Miami", "Tampa", "Tallahassee", "Jacksonville", "Orlando", "Fort Myers")
 cop_fit3 <- RVineStructureSelect(copres2)
 cop_fit3c <- RVineStructureSelect(copres2, type = "CVine")
 
@@ -42,7 +44,7 @@ cop_pdf <- RVinePDF(copres2, cop_fit3)
 
 # plots
 contour(cop_fit3)
-plot(cop_fit3)
+plot(cop_fit3, )
 
 contour(cop_fit3c)
 plot(cop_fit3c)
@@ -57,6 +59,31 @@ set.seed(2024)
 
 tests <- RVineSim(5832, cop_fit3)
 hist(qghyp(tests[,1], object=g1$best.model), breaks=100)
+
+
+# stationary vine copula
+g11 <- stepAIC.ghyp(y, silent=TRUE)
+g22 <- stepAIC.ghyp(y2, silent=TRUE)
+g33 <- stepAIC.ghyp(y3, silent=TRUE)
+g44 <- stepAIC.ghyp(y4, silent=TRUE)
+g55 <- stepAIC.ghyp(y5, silent=TRUE)
+g66 <- stepAIC.ghyp(y6, silent=TRUE)
+
+# take one day of data
+y11 <- pghyp(y[1:24], object=g11$best.model)
+y22 <- pghyp(y2[1:24], object=g22$best.model)
+y33 <- pghyp(y3[1:24], object=g33$best.model)
+y44 <- pghyp(y4[1:24], object=g44$best.model)
+y55 <- pghyp(y5[1:24], object=g55$best.model)
+y66 <- pghyp(y6[1:24], object=g66$best.model)
+
+svinedata <- cbind(y11, y22, y33, y44, y55, y66)
+colnames(svinedata) <- c("Miami", "Tampa", "Tallahassee", "Jacksonville", "Orlando", "Fort Myers")
+s_fit1 <- svinecop(svinedata, p=1)
+s_fit2 <- svinecop(svinedata, p=10)
+
+
+
 
 
 # visualise location of all the cities in Florida
@@ -82,6 +109,14 @@ edgesc <- data.frame(
   lon2 = c(-80.2, -82.5, -84.2, -81.7, -81.9),
   lat2 = c(25.8, 28.0, 30.4, 30.3, 26.6)
 )
+edgess <- data.frame(
+  from = c("Fort Meyers (6)", "Miami (1)", "Jacksonville (4)", "Jacksonville (4)", "Tampa (2)"),
+  to = c("Miami (1)", "Jacksonville (4)", "Tallahassee (3)", "Tampa (2)", "Orlando (5)"),
+  lon = c(-81.9, -80.2, -81.7, -81.7, -82.5),
+  lat = c(26.6, 25.8, 30.3, 30.3, 28.0),
+  lon2 = c(-80.2, -81.7, -84.2, -82.5, -81.4),
+  lat2 = c(25.8, 30.3, 30.4, 28.0, 28.5)
+)
 
 ggplot() +
   ggtitle("Map of Florida and Cities in the D-Vine Copula Model") +
@@ -101,6 +136,18 @@ ggplot() +
                fill = "grey", color = "black") +
   geom_point(data = cities, aes(x = lon, y = lat), color = "red", size = 3) +
   geom_segment(data = edgesc, 
+               aes(x = lon, y = lat, xend = lon2, yend = lat2, group = NULL),
+               color = "red", size = 1) +
+  geom_text(data = cities, aes(x = lon, y = lat, label = city), 
+            color = "black", size = 4, vjust = -1) +
+  coord_fixed(ratio = 1.3)
+
+ggplot() +
+  ggtitle("Map of Florida and Cities in the S-Vine Copula Model") +
+  geom_polygon(data = flo, aes(x = long, y = lat, group = group), 
+               fill = "grey", color = "black") +
+  geom_point(data = cities, aes(x = lon, y = lat), color = "red", size = 3) +
+  geom_segment(data = edgess, 
                aes(x = lon, y = lat, xend = lon2, yend = lat2, group = NULL),
                color = "red", size = 1) +
   geom_text(data = cities, aes(x = lon, y = lat, label = city), 
