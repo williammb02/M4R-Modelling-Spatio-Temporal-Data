@@ -44,10 +44,10 @@ cop_pdf <- RVinePDF(copres2, cop_fit3)
 
 # plots
 contour(cop_fit3)
-plot(cop_fit3, )
+plot(cop_fit3, var_names="use")
 
 contour(cop_fit3c)
-plot(cop_fit3c)
+plot(cop_fit3c, var_names="legend")
 
 # hypothesis test of two copulas
 c(cop_fit3$AIC, cop_fit3$BIC) < c(cop_fit3c$AIC, cop_fit3c$BIC)
@@ -78,12 +78,13 @@ y55 <- pghyp(y5[1:24], object=g55$best.model)
 y66 <- pghyp(y6[1:24], object=g66$best.model)
 
 svinedata <- cbind(y11, y22, y33, y44, y55, y66)
-colnames(svinedata) <- c("Miami", "Tampa", "Tallahassee", "Jacksonville", "Orlando", "Fort Myers")
+colnames(svinedata) <- c("M", "Tam", "Tal", "J", "O", "FM")
 s_fit1 <- svinecop(svinedata, p=1)
-s_fit2 <- svinecop(svinedata, p=10)
+s_fit2 <- svinecop(svinedata, p=7)
+s_fit3 <- svinecop(svinedata, p=10)
 
-
-
+plot(s_fit1, var_names="use")
+plot(s_fit2, var_names="use")
 
 
 # visualise location of all the cities in Florida
