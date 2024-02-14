@@ -146,7 +146,7 @@ edgess3 <- data.frame(
 )
 
 ggplot() +
-  ggtitle("Map of Florida and Cities in the D-Vine Copula Model") +
+  ggtitle("Map of Florida and Cities in the D-Vine and S-Vine Copula Models") +
   geom_polygon(data = flo, aes(x = long, y = lat, group = group), 
                fill = "grey", color = "black") +
   geom_point(data = cities, aes(x = lon, y = lat), color = "red", size = 3) +
@@ -163,42 +163,6 @@ ggplot() +
                fill = "grey", color = "black") +
   geom_point(data = cities, aes(x = lon, y = lat), color = "red", size = 3) +
   geom_segment(data = edgesc, 
-               aes(x = lon, y = lat, xend = lon2, yend = lat2, group = NULL),
-               color = "red", size = 1) +
-  geom_text(data = cities, aes(x = lon, y = lat, label = city), 
-            color = "black", size = 4, vjust = -1) +
-  coord_fixed(ratio = 1.3)
-#s1
-ggplot() +
-  ggtitle("Map of Florida and Cities in the S-Vine Copula Model") +
-  geom_polygon(data = flo, aes(x = long, y = lat, group = group), 
-               fill = "grey", color = "black") +
-  geom_point(data = cities, aes(x = lon, y = lat), color = "red", size = 3) +
-  geom_segment(data = edgess1, 
-               aes(x = lon, y = lat, xend = lon2, yend = lat2, group = NULL),
-               color = "red", size = 1) +
-  geom_text(data = cities, aes(x = lon, y = lat, label = city), 
-            color = "black", size = 4, vjust = -1) +
-  coord_fixed(ratio = 1.3)
-#s2
-ggplot() +
-  ggtitle("Map of Florida and Cities in the S-Vine Copula Model") +
-  geom_polygon(data = flo, aes(x = long, y = lat, group = group), 
-               fill = "grey", color = "black") +
-  geom_point(data = cities, aes(x = lon, y = lat), color = "red", size = 3) +
-  geom_segment(data = edgess2, 
-               aes(x = lon, y = lat, xend = lon2, yend = lat2, group = NULL),
-               color = "red", size = 1) +
-  geom_text(data = cities, aes(x = lon, y = lat, label = city), 
-            color = "black", size = 4, vjust = -1) +
-  coord_fixed(ratio = 1.3)
-#s3
-ggplot() +
-  ggtitle("Map of Florida and Cities in the S-Vine Copula Model") +
-  geom_polygon(data = flo, aes(x = long, y = lat, group = group), 
-               fill = "grey", color = "black") +
-  geom_point(data = cities, aes(x = lon, y = lat), color = "red", size = 3) +
-  geom_segment(data = edgess3, 
                aes(x = lon, y = lat, xend = lon2, yend = lat2, group = NULL),
                color = "red", size = 1) +
   geom_text(data = cities, aes(x = lon, y = lat, label = city), 
