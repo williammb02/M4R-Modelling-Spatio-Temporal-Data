@@ -92,8 +92,61 @@ y66 <- pghyp(y6[1:672], object=g66$best.model)
 
 svinedata <- cbind(y11, y22, y33, y44, y55, y66)
 colnames(svinedata) <- c("M", "Tam", "Tal", "J", "O", "FM")
-s_fit2 <- svinecop(svinedata, p=7)
+s_fit2 <- svinecop(svinedata, p=6)
 plot(s_fit2, var_names="use")
+
+
+# using monthly data
+g11m <- stepAIC.ghyp(ym, silent=TRUE)
+g22m <- stepAIC.ghyp(ym2, silent=TRUE)
+g33m <- stepAIC.ghyp(ym3, silent=TRUE)
+g44m <- stepAIC.ghyp(ym4, silent=TRUE)
+g55m <- stepAIC.ghyp(ym5, silent=TRUE)
+g66m <- stepAIC.ghyp(ym6, silent=TRUE)
+
+y11m <- pghyp(ym[1:120], object=g11m$best.model)
+y11m[is.na(y11m)] <- mean(y11m[!is.na(y11m)])
+y22m <- pghyp(ym2[1:120], object=g22m$best.model)
+y22m[is.na(y22m)] <- mean(y22m[!is.na(y22m)])
+y33m <- pghyp(ym3[1:120], object=g33m$best.model)
+y33m[is.na(y33m)] <- mean(y33m[!is.na(y33m)])
+y44m <- pghyp(ym4[1:120], object=g44m$best.model)
+y44m[is.na(y44m)] <- mean(y44m[!is.na(y44m)])
+y55m <- pghyp(ym5[1:120], object=g55m$best.model)
+y55m[is.na(y55m)] <- mean(y55m[!is.na(y55m)])
+y66m <- pghyp(ym6[1:120], object=g66m$best.model)
+y66m[is.na(y66m)] <- mean(y66m[!is.na(y66m)])
+
+svinedatam <- cbind(y11m, y22m, y33m, y44m, y55m, y66m)
+colnames(svinedatam) <- c("M", "Tam", "Tal", "J", "O", "FM")
+s_fitm <- svinecop(svinedatam, p=6)
+plot(s_fitm, var_names="use")
+
+# monthly but with precipitation too
+g11mt <- stepAIC.ghyp(ymt, silent=TRUE)
+g22mt <- stepAIC.ghyp(ymt2, silent=TRUE)
+g33mt <- stepAIC.ghyp(ymt3, silent=TRUE)
+g44mt <- stepAIC.ghyp(ymt4, silent=TRUE)
+g55mt <- stepAIC.ghyp(ymt5, silent=TRUE)
+g66mt <- stepAIC.ghyp(ymt6, silent=TRUE)
+
+y11mt <- pghyp(ymt[1:120], object=g11m$best.model)
+y11mt[is.na(y11mt)] <- mean(y11mt[!is.na(y11mt)])
+y22mt <- pghyp(ymt2[1:120], object=g22m$best.model)
+y22mt[is.na(y22mt)] <- mean(y22mt[!is.na(y22mt)])
+y33mt <- pghyp(ymt3[1:120], object=g33m$best.model)
+y33mt[is.na(y33mt)] <- mean(y33mt[!is.na(y33mt)])
+y44mt <- pghyp(ymt4[1:120], object=g44m$best.model)
+y44mt[is.na(y44mt)] <- mean(y44mt[!is.na(y44mt)])
+y55mt <- pghyp(ymt5[1:120], object=g55m$best.model)
+y55mt[is.na(y55mt)] <- mean(y55mt[!is.na(y55mt)])
+y66mt <- pghyp(ymt6[1:120], object=g66m$best.model)
+y66mt[is.na(y66mt)] <- mean(y66mt[!is.na(y66mt)])
+
+svinedatamt <- cbind(y11m, y22m, y33m, y44m, y55m, y66m, y11mt, y22mt, y33mt, y44mt, y55mt, y66mt)
+colnames(svinedatamt) <- c("M W", "Tam W", "Tal W", "J W", "O W", "FM W", "M P", "Tam P", "Tal P", "J P", "O P", "FM P")
+s_fitmt <- svinecop(svinedatamt, p=3)
+plot(s_fitmt, var_names="use")
 
 
 

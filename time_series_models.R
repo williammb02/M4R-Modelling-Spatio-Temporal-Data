@@ -15,9 +15,41 @@ create_formula <- function(key_freqs) {
   }
   return(as.formula(paste("z ~", substr(sentence, 1, nchar(sentence) - 1))))
 }
+# same but for monthly data
+create_formulam <- function(key_freqs) {
+  sentence <- ""
+  if (length(key_freqs)%%2 == 0){
+    k <- length(key_freqs)/2 + 1
+  } else {
+    k <- round(length(key_freqs)/2, 0)
+  }
+  
+  for (i in k:length(key_freqs)) {
+    term <- paste("sin(2*pi*", key_freqs[i], "*tm) + cos(2*pi*", key_freqs[i], "*tm)")
+    sentence <- paste(sentence, term, "+", sep = "")
+  }
+  return(as.formula(paste("zm ~", substr(sentence, 1, nchar(sentence) - 1))))
+}
+
+create_formulamt <- function(key_freqs) {
+  sentence <- ""
+  if (length(key_freqs)%%2 == 0){
+    k <- length(key_freqs)/2 + 1
+  } else {
+    k <- round(length(key_freqs)/2, 0)
+  }
+  
+  for (i in k:length(key_freqs)) {
+    term <- paste("sin(2*pi*", key_freqs[i], "*tm) + cos(2*pi*", key_freqs[i], "*tm)")
+    sentence <- paste(sentence, term, "+", sep = "")
+  }
+  return(as.formula(paste("zmt ~", substr(sentence, 1, nchar(sentence) - 1))))
+}
 
 t <- 1:length(miami_w_2023)
 freq <- seq(from = -0.5, to = 0.5, length = length(miami_w_2023))
+tm <- 1:length(miami_w)
+freqm <- seq(from = -0.5, to = 0.5, length = length(miami_w))
 
 # fit a personal stl model to miami wind speed
 # aim for an additive model
@@ -156,6 +188,200 @@ y6_garch@fit$solver$sol$par
 y6_gar_res <- y6_garch@fit$residuals
 
 # monthly approach
+# miami
+quadfitm <- lm(miami_w ~ poly(tm, 2, raw=TRUE))
+zm <- miami_w - quadfitm$fitted.values
+key_freqsm <- c()
+for(i in 1:length(my_periodogram(zm))){
+  if(my_periodogram(zm)[i] > 3){
+    key_freqsm <- c(key_freqsm, freqm[i])
+  }
+}
+key_freqsm <- key_freqsm[11:20]
+seasonqfitm <- lm(create_formulam(key_freqsm))
+ym <- zm - seasonqfitm$fitted.values
+# fit arima model to y
+y_modelm <- auto.arima(ym, ic = "aicc")
+# fit arma garch model to y 
+yspecm <- ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,1)), 
+                    mean.model=list(armaOrder = c(2, 1), include.mean=TRUE))
+y_garchm <- ugarchfit(spec = yspecm, data = ym, solver="hybrid")
+y_gar_resm <- y_garchm@fit$residuals
+# tampa
+quadfitm2 <- lm(tampa_w ~ poly(tm, 2, raw=TRUE))
+zm2 <- tampa_w - quadfitm2$fitted.values
+key_freqsm2 <- c()
+for(i in 1:length(my_periodogram(zm2))){
+  if(my_periodogram(zm2)[i] > 1.25){
+    key_freqsm2 <- c(key_freqsm2, freqm[i])
+  }
+}
+key_freqsm2 <- key_freqsm2[11:20]
+seasonqfitm2 <- lm(create_formulam(key_freqsm2))
+ym2 <- zm2 - seasonqfitm2$fitted.values
+# fit arima model to y
+y_modelm2 <- auto.arima(ym2, ic = "aicc")
+# fit arma garch model to y 
+yspecm2 <- ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,1)), 
+                     mean.model=list(armaOrder = c(2, 1), include.mean=TRUE))
+y_garchm2 <- ugarchfit(spec = yspecm2, data = ym2, solver="hybrid")
+y_gar_resm2 <- y_garchm2@fit$residuals
+# tallahassee
+quadfitm3 <- lm(tallahassee_w ~ poly(tm, 2, raw=TRUE))
+zm3 <- tallahassee_w - quadfitm3$fitted.values
+key_freqsm3 <- c()
+for(i in 1:length(my_periodogram(zm3))){
+  if(my_periodogram(zm3)[i] > 0.25){
+    key_freqsm3 <- c(key_freqsm3, freqm[i])
+  }
+}
+key_freqsm3 <- key_freqsm3[23:32]
+seasonqfitm3 <- lm(create_formulam(key_freqsm3))
+ym3 <- zm3 - seasonqfitm3$fitted.values
+# fit arima model to y
+y_modelm3 <- auto.arima(ym3, ic = "aicc")
+# fit arma garch model to y 
+yspecm3 <- ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,1)), 
+                      mean.model=list(armaOrder = c(1, 4), include.mean=TRUE))
+y_garchm3 <- ugarchfit(spec = yspecm3, data = ym3, solver="hybrid")
+y_gar_resm3 <- y_garchm3@fit$residuals
+# jacksonville
+quadfitm4 <- lm(jackson_w ~ poly(tm, 2, raw=TRUE))
+zm4 <- jackson_w - quadfitm4$fitted.values
+key_freqsm4 <- c()
+for(i in 1:length(my_periodogram(zm4))){
+  if(my_periodogram(zm4)[i] > 0.5){
+    key_freqsm4 <- c(key_freqsm4, freqm[i])
+  }
+}
+key_freqsm4 <- key_freqsm4[17:26]
+seasonqfitm4 <- lm(create_formulam(key_freqsm4))
+ym4 <- zm4 - seasonqfitm4$fitted.values
+# fit arima model to y
+y_modelm4 <- auto.arima(ym4, ic = "aicc")
+# fit arma garch model to y 
+yspecm4 <- ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,1)), 
+                      mean.model=list(armaOrder = c(5, 1), include.mean=TRUE))
+y_garchm4 <- ugarchfit(spec = yspecm4, data = ym4, solver="hybrid")
+y_gar_resm4 <- y_garchm4@fit$residuals
+# orlando
+quadfitm5 <- lm(orlando_w ~ poly(tm, 2, raw=TRUE))
+zm5 <- orlando_w - quadfitm5$fitted.values
+key_freqsm5 <- c()
+for(i in 1:length(my_periodogram(zm5))){
+  if(my_periodogram(zm5)[i] > 0.9){
+    key_freqsm5 <- c(key_freqsm5, freqm[i])
+  }
+}
+key_freqsm5 <- key_freqsm5[13:22]
+seasonqfitm5 <- lm(create_formulam(key_freqsm5))
+ym5 <- zm5 - seasonqfitm5$fitted.values
+# fit arima model to y
+y_modelm5 <- auto.arima(ym5, ic = "aicc")
+# fit arma garch model to y 
+yspecm5 <- ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,1)), 
+                      mean.model=list(armaOrder = c(2, 3), include.mean=TRUE))
+y_garchm5 <- ugarchfit(spec = yspecm5, data = ym5, solver="hybrid")
+y_gar_resm5 <- y_garchm5@fit$residuals
+# fort myers
+quadfitm6 <- lm(fort_w ~ poly(tm, 2, raw=TRUE))
+zm6 <- fort_w - quadfitm6$fitted.values
+key_freqsm6 <- c()
+for(i in 1:length(my_periodogram(zm6))){
+  if(my_periodogram(zm6)[i] > 1){
+    key_freqsm6 <- c(key_freqsm6, freqm[i])
+  }
+}
+key_freqsm6 <- key_freqsm6[19:28]
+seasonqfitm6 <- lm(create_formulam(key_freqsm6))
+ym6 <- zm6 - seasonqfitm6$fitted.values
+# fit arima model to y
+y_modelm6 <- auto.arima(ym6, ic = "aicc")
+# fit arma garch model to y 
+yspecm6 <- ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,1)), 
+                      mean.model=list(armaOrder = c(3, 1), include.mean=TRUE))
+y_garchm6 <- ugarchfit(spec = yspecm6, data = ym6, solver="hybrid")
+y_gar_resm6 <- y_garchm6@fit$residuals
+
+# precipitation
+# miami
+quadfitmt <- lm(miami_tp ~ poly(tm, 2, raw=TRUE))
+zmt <- miami_tp - quadfitmt$fitted.values
+key_freqsmt <- c()
+for(i in 1:length(my_periodogram(zmt))){
+  if(my_periodogram(zmt)[i] > 0.00001){
+    key_freqsmt <- c(key_freqsmt, freqm[i])
+  }
+}
+key_freqsmt <- key_freqsmt[25:34]
+seasonqfitmt <- lm(create_formulamt(key_freqsmt))
+ymt <- zmt - seasonqfitmt$fitted.values
+
+# tampa
+quadfitmt2 <- lm(tampa_tp ~ poly(tm, 2, raw=TRUE))
+zmt2 <- tampa_tp - quadfitmt2$fitted.values
+key_freqsmt2 <- c()
+for(i in 1:length(my_periodogram(zmt2))){
+  if(my_periodogram(zmt2)[i] > 0.00001){
+    key_freqsmt2 <- c(key_freqsmt2, freqm[i])
+  }
+}
+key_freqsmt2 <- key_freqsmt2[23:32]
+seasonqfitmt2 <- lm(create_formulamt(key_freqsmt2))
+ymt2 <- zmt2 - seasonqfitmt2$fitted.values
+
+# tallahassee
+quadfitmt3 <- lm(tallahassee_tp ~ poly(tm, 2, raw=TRUE))
+zmt3 <- tallahassee_tp - quadfitmt3$fitted.values
+key_freqsmt3 <- c()
+for(i in 1:length(my_periodogram(zmt3))){
+  if(my_periodogram(zmt3)[i] > 0.00001){
+    key_freqsmt3 <- c(key_freqsmt3, freqm[i])
+  }
+}
+key_freqsmt3 <- key_freqsmt3[17:26]
+seasonqfitmt3 <- lm(create_formulamt(key_freqsmt3))
+ymt3 <- zmt3 - seasonqfitmt3$fitted.values
+
+# jacksonville
+quadfitmt4 <- lm(jackson_tp ~ poly(tm, 2, raw=TRUE))
+zmt4 <- jackson_tp - quadfitmt4$fitted.values
+key_freqsmt4 <- c()
+for(i in 1:length(my_periodogram(zmt4))){
+  if(my_periodogram(zmt4)[i] > 0.00001){
+    key_freqsmt4 <- c(key_freqsmt4, freqm[i])
+  }
+}
+key_freqsmt4 <- key_freqsmt4[12:21]
+seasonqfitmt4 <- lm(create_formulamt(key_freqsmt4))
+ymt4 <- zmt4 - seasonqfitmt4$fitted.values
+
+# orlando
+quadfitmt5 <- lm(orlando_tp ~ poly(tm, 2, raw=TRUE))
+zmt5 <- orlando_tp - quadfitmt5$fitted.values
+key_freqsmt5 <- c()
+for(i in 1:length(my_periodogram(zmt5))){
+  if(my_periodogram(zmt5)[i] > 0.00001){
+    key_freqsmt5 <- c(key_freqsmt5, freqm[i])
+  }
+}
+key_freqsmt5 <- key_freqsmt5[18:27]
+seasonqfitmt5 <- lm(create_formulamt(key_freqsmt5))
+ymt5 <- zmt5 - seasonqfitmt5$fitted.values
+
+# fort myers
+quadfitmt6 <- lm(fort_tp ~ poly(tm, 2, raw=TRUE))
+zmt6 <- fort_tp - quadfitmt6$fitted.values
+key_freqsmt6 <- c()
+for(i in 1:length(my_periodogram(zmt6))){
+  if(my_periodogram(zmt6)[i] > 0.00001){
+    key_freqsmt6 <- c(key_freqsmt6, freqm[i])
+  }
+}
+key_freqsmt6 <- key_freqsmt6[21:30]
+seasonqfitmt6 <- lm(create_formulamt(key_freqsmt6))
+ymt6 <- zmt6 - seasonqfitmt6$fitted.values
+
 
 
 # plots
