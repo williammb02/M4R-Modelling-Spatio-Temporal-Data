@@ -1,11 +1,3 @@
-miami_w_2023 <- sqrt(miami_u10_2023^2 + miami_v10_2023^2)
-tampa_w_2023 <- sqrt(tampa_u10_2023^2 + tampa_v10_2023^2)
-talla_w_2023 <- sqrt(talla_u10_2023^2 + talla_v10_2023^2)
-
-jack_w_2023 <- sqrt(jack_u10_2023^2 + jack_v10_2023^2)
-orla_w_2023 <- sqrt(orla_u10_2023^2 + orla_v10_2023^2)
-fort_w_2023 <- sqrt(fort_u10_2023^2 + fort_v10_2023^2)
-
 set.seed(5)
 
 # generate a formula to use for finding coefficients
@@ -55,25 +47,6 @@ y_garch@fit$solver$sol$par
 y_gar_res <- y_garch@fit$residuals
 y_armac <- y_garch@fit$coef[2:6]
 y_garchc <- y_garch@fit$coef[7:9]
-
-# plots
-plot(miami_w_2023, type="l", main="Quadratic Trend")
-lines(quadfit$fitted.values, col="red")
-
-plot(freq, my_periodogram(z), type="l")
-
-plot(z, type="l", main="Quadratic Trend with Seasonal Component")
-lines(seasonqfit$fitted.values, col="red")
-
-par(mfrow = c(2,2))
-plot(y, type="l", main="Remainder with Quadratic Trend")
-hist(y, breaks=100, freq=FALSE, main="Histogram")
-lines(density(y), col="red")
-qqnorm(y, main="QQ Plot")
-acf(y)
-
-
-
 # tampa wind speed
 # quadratic
 quadfit2 <- lm(tampa_w_2023 ~ poly(t, 2, raw=TRUE))
@@ -91,12 +64,115 @@ y2 <- z2 - seasonqfit2$fitted.values
 y2_model <- auto.arima(y2, ic = "aicc")
 
 y2spec <- ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,1)), 
-                    mean.model=list(armaOrder = c(5, 2), include.mean=TRUE))
+                     mean.model=list(armaOrder = c(5, 2), include.mean=TRUE))
 y2_garch <- ugarchfit(spec = y2spec, data = y2, solver="hybrid")
 y2_garch@fit$solver$sol$par
 y2_armac <- y2_garch@fit$solver$sol$par[2:8]
 y2_garchc <- y2_garch@fit$solver$sol$par[9:11]
 y2_gar_res <- y2_garch@fit$residuals
+# tallahassee ARMA-GARCH model
+quadfit3 <- lm(talla_w_2023 ~ poly(t, 2, raw=TRUE))
+z3 <- talla_w_2023 - quadfit3$fitted.values
+key_freqs3 <- c()
+for(i in 1:length(my_periodogram(z3))){
+  if(my_periodogram(z3)[i] > 31.5){
+    key_freqs3 <- c(key_freqs3, freq[i])
+  }
+}
+key_freqs3 <- key_freqs3[11:20]
+seasonqfit3 <- lm(create_formula(key_freqs3))
+y3 <- z3 - seasonqfit3$fitted.values
+# fit arima model to y3
+y3_model <- auto.arima(y3, ic = "aicc")
+# fit arma garch model to y3 using arima choice 
+y3spec <- ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,1)), 
+                     mean.model=list(armaOrder = c(1,1), include.mean=TRUE))
+y3_garch <- ugarchfit(spec = y3spec, data = y3, solver="hybrid")
+y3_garch@fit$solver$sol$par
+y3_armac <- y3_garch@fit$solver$sol$par[2:3]
+y3_garchc <- y3_garch@fit$solver$sol$par[4:6]
+y3_gar_res <- y3_garch@fit$residuals
+# jackson
+quadfit4 <- lm(jack_w_2023 ~ poly(t, 2, raw=TRUE))
+z4 <- jack_w_2023 - quadfit4$fitted.values
+key_freqs4 <- c()
+for(i in 1:length(my_periodogram(z4))){
+  if(my_periodogram(z4)[i] > 47){
+    key_freqs4 <- c(key_freqs4, freq[i])
+  }
+}
+key_freqs4 <- key_freqs4[11:20]
+seasonqfit4 <- lm(create_formula(key_freqs4))
+y4 <- z4 - seasonqfit4$fitted.values
+# fit arima model to y4
+y4_model <- auto.arima(y4, ic = "aicc")
+# fit arma garch model to y4 using arima choice 
+y4spec <- ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,1)), 
+                     mean.model=list(armaOrder = c(2,1), include.mean=TRUE))
+y4_garch <- ugarchfit(spec = y4spec, data = y4, solver="hybrid")
+y4_garch@fit$solver$sol$par
+y4_gar_res <- y4_garch@fit$residuals
+
+# orlando
+quadfit5 <- lm(orla_w_2023 ~ poly(t, 2, raw=TRUE))
+z5 <- orla_w_2023 - quadfit5$fitted.values
+key_freqs5 <- c()
+for(i in 1:length(my_periodogram(z5))){
+  if(my_periodogram(z5)[i] > 77){
+    key_freqs5 <- c(key_freqs5, freq[i])
+  }
+}
+key_freqs5 <- key_freqs5[11:20]
+seasonqfit5 <- lm(create_formula(key_freqs5))
+y5 <- z5 - seasonqfit5$fitted.values
+# fit arima model to y5
+y5_model <- auto.arima(y5, ic = "aicc")
+# fit arma garch model to y5 using arima choice 
+y5spec <- ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,1)), 
+                     mean.model=list(armaOrder = c(1,1), include.mean=TRUE))
+y5_garch <- ugarchfit(spec = y5spec, data = y5, solver="hybrid")
+y5_garch@fit$solver$sol$par
+y5_gar_res <- y5_garch@fit$residuals
+
+# fort meyers
+quadfit6 <- lm(fort_w_2023 ~ poly(t, 2, raw=TRUE))
+z6 <- fort_w_2023 - quadfit6$fitted.values
+key_freqs6 <- c()
+for(i in 1:length(my_periodogram(z6))){
+  if(my_periodogram(z6)[i] > 97.75){
+    key_freqs6 <- c(key_freqs6, freq[i])
+  }
+}
+key_freqs6 <- key_freqs6[11:20]
+seasonqfit6 <- lm(create_formula(key_freqs6))
+y6 <- z6 - seasonqfit6$fitted.values
+# fit arima model to y6
+y6_model <- auto.arima(y6, ic = "aicc")
+# fit arma garch model to y6 using arima choice 
+y6spec <- ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,1)), 
+                     mean.model=list(armaOrder = c(3,1), include.mean=TRUE))
+y6_garch <- ugarchfit(spec = y6spec, data = y6, solver="hybrid")
+y6_garch@fit$solver$sol$par
+y6_gar_res <- y6_garch@fit$residuals
+
+# monthly approach
+
+
+# plots
+plot(miami_w_2023, type="l", main="Quadratic Trend")
+lines(quadfit$fitted.values, col="red")
+
+plot(freq, my_periodogram(z), type="l")
+
+plot(z, type="l", main="Quadratic Trend with Seasonal Component")
+lines(seasonqfit$fitted.values, col="red")
+
+par(mfrow = c(2,2))
+plot(y, type="l", main="Remainder with Quadratic Trend")
+hist(y, breaks=100, freq=FALSE, main="Histogram")
+lines(density(y), col="red")
+qqnorm(y, main="QQ Plot")
+acf(y)
 
 # plots
 plot(tampa_w_2023, type="l", main="Quadratic Trend")
@@ -335,30 +411,6 @@ var_res_mvn <- mvn("XXX", cbind(y_var_res, y2_var_res))
 var_res_ghyp <- stepAIC.ghyp(cbind(y_var_res, y2_var_res), silent=TRUE)
 
 
-
-# tallahassee ARMA-GARCH model
-quadfit3 <- lm(talla_w_2023 ~ poly(t, 2, raw=TRUE))
-z3 <- talla_w_2023 - quadfit3$fitted.values
-key_freqs3 <- c()
-for(i in 1:length(my_periodogram(z3))){
-  if(my_periodogram(z3)[i] > 31.5){
-    key_freqs3 <- c(key_freqs3, freq[i])
-  }
-}
-key_freqs3 <- key_freqs3[11:20]
-seasonqfit3 <- lm(create_formula(key_freqs3))
-y3 <- z3 - seasonqfit3$fitted.values
-# fit arima model to y3
-y3_model <- auto.arima(y3, ic = "aicc")
-# fit arma garch model to y3 using arima choice 
-y3spec <- ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,1)), 
-                     mean.model=list(armaOrder = c(1,1), include.mean=TRUE))
-y3_garch <- ugarchfit(spec = y3spec, data = y3, solver="hybrid")
-y3_garch@fit$solver$sol$par
-y3_armac <- y3_garch@fit$solver$sol$par[2:3]
-y3_garchc <- y3_garch@fit$solver$sol$par[4:6]
-y3_gar_res <- y3_garch@fit$residuals
-
 # miami, talla
 garch2_res_ghyp <- stepAIC.ghyp(cbind(y_garch@fit$residuals, y3_garch@fit$residuals), silent = TRUE)
 garch2_res_ghyp$best.model
@@ -366,71 +418,6 @@ garch2_res_ghyp$best.model
 # tampa, talla
 garch3_res_ghyp <- stepAIC.ghyp(cbind(y2_garch@fit$residuals, y3_garch@fit$residuals), silent = TRUE)
 garch3_res_ghyp$best.model
-
-# jackson
-quadfit4 <- lm(jack_w_2023 ~ poly(t, 2, raw=TRUE))
-z4 <- jack_w_2023 - quadfit4$fitted.values
-key_freqs4 <- c()
-for(i in 1:length(my_periodogram(z4))){
-  if(my_periodogram(z4)[i] > 47){
-    key_freqs4 <- c(key_freqs4, freq[i])
-  }
-}
-key_freqs4 <- key_freqs4[11:20]
-seasonqfit4 <- lm(create_formula(key_freqs4))
-y4 <- z4 - seasonqfit4$fitted.values
-# fit arima model to y4
-y4_model <- auto.arima(y4, ic = "aicc")
-# fit arma garch model to y4 using arima choice 
-y4spec <- ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,1)), 
-                     mean.model=list(armaOrder = c(2,1), include.mean=TRUE))
-y4_garch <- ugarchfit(spec = y4spec, data = y4, solver="hybrid")
-y4_garch@fit$solver$sol$par
-y4_gar_res <- y4_garch@fit$residuals
-
-# orlando
-quadfit5 <- lm(orla_w_2023 ~ poly(t, 2, raw=TRUE))
-z5 <- orla_w_2023 - quadfit5$fitted.values
-key_freqs5 <- c()
-for(i in 1:length(my_periodogram(z5))){
-  if(my_periodogram(z5)[i] > 77){
-    key_freqs5 <- c(key_freqs5, freq[i])
-  }
-}
-key_freqs5 <- key_freqs5[11:20]
-seasonqfit5 <- lm(create_formula(key_freqs5))
-y5 <- z5 - seasonqfit5$fitted.values
-# fit arima model to y5
-y5_model <- auto.arima(y5, ic = "aicc")
-# fit arma garch model to y5 using arima choice 
-y5spec <- ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,1)), 
-                     mean.model=list(armaOrder = c(1,1), include.mean=TRUE))
-y5_garch <- ugarchfit(spec = y5spec, data = y5, solver="hybrid")
-y5_garch@fit$solver$sol$par
-y5_gar_res <- y5_garch@fit$residuals
-
-# fort meyers
-quadfit6 <- lm(fort_w_2023 ~ poly(t, 2, raw=TRUE))
-z6 <- fort_w_2023 - quadfit6$fitted.values
-key_freqs6 <- c()
-for(i in 1:length(my_periodogram(z6))){
-  if(my_periodogram(z6)[i] > 97.75){
-    key_freqs6 <- c(key_freqs6, freq[i])
-  }
-}
-key_freqs6 <- key_freqs6[11:20]
-seasonqfit6 <- lm(create_formula(key_freqs6))
-y6 <- z6 - seasonqfit6$fitted.values
-# fit arima model to y6
-y6_model <- auto.arima(y6, ic = "aicc")
-# fit arma garch model to y6 using arima choice 
-y6spec <- ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,1)), 
-                     mean.model=list(armaOrder = c(3,1), include.mean=TRUE))
-y6_garch <- ugarchfit(spec = y6spec, data = y6, solver="hybrid")
-y6_garch@fit$solver$sol$par
-y6_gar_res <- y6_garch@fit$residuals
-
-
 
 
 # try fitting another seasonal component to the residuals

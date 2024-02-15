@@ -67,13 +67,41 @@ my_periodogram <- function(x){
 }
 
 # a collection if indexes for cities
-nyc_index <- city_coord_index(40.7, -74.0)
-la_index <- city_coord_index(34.1, -118.2)
-austin_index <- city_coord_index(30.3, -97.7)
-dc_index <- city_coord_index(38.9, -77.0)
 miami_index <- city_coord_index(25.8, -80.2)
 tampa_index <- city_coord_index(28.0, -82.5)
 tallahassee_index <- city_coord_index(30.4, -84.2)
+jackson_index <- city_coord_index(30.3, -81.7)
+orlando_index <- city_coord_index(28.5, -81.4)
+fort_index <- city_coord_index(26.6, -81.9)
+
+# read in monthly data
+miami_tp <- import_climate_data("tp", miami_index[1], miami_index[2])
+tampa_tp <- import_climate_data("tp", tampa_index[1], tampa_index[2])
+tallahassee_tp <- import_climate_data("tp", tallahassee_index[1], tallahassee_index[2])
+jackson_tp <- import_climate_data("tp", jackson_index[1], jackson_index[2])
+orlando_tp <- import_climate_data("tp", orlando_index[1], orlando_index[2])
+fort_tp <- import_climate_data("tp", fort_index[1], fort_index[2])
+
+miami_u10 <- import_climate_data("u10", miami_index[1], miami_index[2])
+tampa_u10 <- import_climate_data("u10", tampa_index[1], tampa_index[2])
+tallahassee_u10 <- import_climate_data("u10", tallahassee_index[1], tallahassee_index[2])
+jackson_u10 <- import_climate_data("u10", jackson_index[1], jackson_index[2])
+orlando_u10 <- import_climate_data("u10", orlando_index[1], orlando_index[2])
+fort_u10 <- import_climate_data("u10", fort_index[1], fort_index[2])
+
+miami_v10 <- import_climate_data("v10", miami_index[1], miami_index[2])
+tampa_v10 <- import_climate_data("v10", tampa_index[1], tampa_index[2])
+tallahassee_v10 <- import_climate_data("v10", tallahassee_index[1], tallahassee_index[2])
+jackson_v10 <- import_climate_data("v10", jackson_index[1], jackson_index[2])
+orlando_v10 <- import_climate_data("v10", orlando_index[1], orlando_index[2])
+fort_v10 <- import_climate_data("v10", fort_index[1], fort_index[2])
+
+miami_w <- sqrt(miami_u10^2 + miami_v10^2)
+tampa_w <- sqrt(tampa_u10^2 + tampa_v10^2)
+tallahassee_w <- sqrt(tallahassee_u10^2 + tallahassee_v10^2)
+orlando_w <- sqrt(orlando_u10^2 + orlando_v10^2)
+jackson_w <- sqrt(jackson_u10^2 + jackson_v10^2)
+fort_w <- sqrt(fort_u10^2 + fort_v10^2)
 
 
 # read in new hourly data
@@ -115,3 +143,10 @@ fort_u10_2023_nc <- nc_open('fort_u10_2023.nc')
 fort_v10_2023_nc <- nc_open('fort_v10_2023.nc')
 fort_u10_2023 <- as.vector(nc.get.var.subset.by.axes(fort_u10_2023_nc, "u10", axis.indices=list(X=1,Y=1)))
 fort_v10_2023 <- as.vector(nc.get.var.subset.by.axes(fort_v10_2023_nc, "v10", axis.indices=list(X=1,Y=1)))
+
+miami_w_2023 <- sqrt(miami_u10_2023^2 + miami_v10_2023^2)
+tampa_w_2023 <- sqrt(tampa_u10_2023^2 + tampa_v10_2023^2)
+talla_w_2023 <- sqrt(talla_u10_2023^2 + talla_v10_2023^2)
+jack_w_2023 <- sqrt(jack_u10_2023^2 + jack_v10_2023^2)
+orla_w_2023 <- sqrt(orla_u10_2023^2 + orla_v10_2023^2)
+fort_w_2023 <- sqrt(fort_u10_2023^2 + fort_v10_2023^2)
