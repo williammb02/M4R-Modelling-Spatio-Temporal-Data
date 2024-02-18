@@ -95,6 +95,27 @@ colnames(svinedata) <- c("M", "Tam", "Tal", "J", "O", "FM")
 s_fit2 <- svinecop(svinedata, p=6)
 plot(s_fit2, var_names="use")
 
+# hourly but with precipitation too
+g11t <- stepAIC.ghyp(yt, silent=TRUE)
+g22t <- stepAIC.ghyp(yt2, silent=TRUE)
+g33t <- stepAIC.ghyp(yt3, silent=TRUE)
+g44t <- stepAIC.ghyp(yt4, silent=TRUE)
+g55t <- stepAIC.ghyp(yt5, silent=TRUE)
+g66t <- stepAIC.ghyp(yt6, silent=TRUE)
+
+y11t <- pghyp(yt, object=g11t$best.model)
+y22t <- pghyp(yt2, object=g22t$best.model)
+y33t <- pghyp(yt3, object=g33t$best.model)
+y44t <- pghyp(yt4, object=g44t$best.model)
+y55t <- pghyp(yt5, object=g55t$best.model)
+y66t <- pghyp(yt6, object=g66t$best.model)
+
+svinedatat <- cbind(y11, y22, y33, y44, y55, y66, y11t, y22t, y33t, y44t, y55t, y66t)
+colnames(svinedatat) <- c("M W", "Tam W", "Tal W", "J W", "O W", "FM W", "M P", "Tam P", "Tal P", "J P", "O P", "FM P")
+s_fitt <- svinecop(svinedatat, p=3)
+plot(s_fitmtt, var_names="use")
+
+
 
 # using monthly data
 g11m <- stepAIC.ghyp(ym, silent=TRUE)
@@ -147,6 +168,19 @@ svinedatamt <- cbind(y11m, y22m, y33m, y44m, y55m, y66m, y11mt, y22mt, y33mt, y4
 colnames(svinedatamt) <- c("M W", "Tam W", "Tal W", "J W", "O W", "FM W", "M P", "Tam P", "Tal P", "J P", "O P", "FM P")
 s_fitmt <- svinecop(svinedatamt, p=3)
 plot(s_fitmt, var_names="use")
+
+
+# extreme value copula 
+# probability integral transform looking at extreme winds
+# calculate max daily wind
+# fit gev dist
+
+# probability integral transform looking at extreme precipitations
+# calculate max daily precip
+# fit gev dist
+
+# stationary vine copula model
+
 
 
 

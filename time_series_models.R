@@ -57,7 +57,7 @@ freqm <- seq(from = -0.5, to = 0.5, length = length(miami_w))
 # fit the trend
 # acf(miami_w_2023)
 
-# quadratic
+# hourly wind speed decompositions
 quadfit <- lm(miami_w_2023 ~ poly(t, 2, raw=TRUE))
 z <- miami_w_2023 - quadfit$fitted.values
 key_freqs <- c()
@@ -187,6 +187,88 @@ y6_garch <- ugarchfit(spec = y6spec, data = y6, solver="hybrid")
 y6_garch@fit$solver$sol$par
 y6_gar_res <- y6_garch@fit$residuals
 
+# hourly precipitation
+# miami
+quadfitt <- lm(miami_tp_2023 ~ poly(t, 2, raw=TRUE))
+zt <- miami_tp_2023 - quadfitt$fitted.values
+key_freqst <- c()
+for(i in 1:length(my_periodogram(zt))){
+  if(my_periodogram(zt)[i] > 0.00001){
+    key_freqst <- c(key_freqst, freq[i])
+  }
+}
+key_freqst <- key_freqst[25:34]
+seasonqfitt <- lm(create_formula(key_freqst))
+yt <- zt - seasonqfitt$fitted.values
+
+# tampa
+quadfit2t <- lm(tampa_tp_2023 ~ poly(t, 2, raw=TRUE))
+zt2 <- tampa_tp_2023 - quadfit2t$fitted.values
+key_freqs2t <- c()
+for(i in 1:length(my_periodogram(zt2))){
+  if(my_periodogram(zt2)[i] > 0.00001){
+    key_freqs2t <- c(key_freqs2t, freq[i])
+  }
+}
+key_freqs2t <- key_freqs2t[25:34]
+seasonqfit2t <- lm(create_formula(key_freqs2t))
+yt2 <- zt2 - seasonqfit2t$fitted.values
+
+# tallahassee
+quadfit3t <- lm(talla_tp_2023 ~ poly(t, 2, raw=TRUE))
+zt3 <- talla_tp_2023 - quadfit3t$fitted.values
+key_freqs3t <- c()
+for(i in 1:length(my_periodogram(zt3))){
+  if(my_periodogram(zt2)[i] > 0.00001){
+    key_freqs3t <- c(key_freqs3t, freq[i])
+  }
+}
+key_freqs3t <- key_freqs3t[25:34]
+seasonqfit3t <- lm(create_formula(key_freqs3t))
+yt3 <- zt3 - seasonqfit3t$fitted.values
+
+#jacksonville
+quadfit4t <- lm(jack_tp_2023 ~ poly(t, 2, raw=TRUE))
+zt4 <- jack_tp_2023 - quadfit4t$fitted.values
+key_freqs4t <- c()
+for(i in 1:length(my_periodogram(zt4))){
+  if(my_periodogram(zt4)[i] > 0.00001){
+    key_freqs4t <- c(key_freqs4t, freq[i])
+  }
+}
+key_freqs4t <- key_freqs4t[25:34]
+seasonqfit4t <- lm(create_formula(key_freqs4t))
+yt4 <- zt4 - seasonqfit4t$fitted.values
+
+# orlando
+quadfit5t <- lm(orla_tp_2023 ~ poly(t, 2, raw=TRUE))
+zt5 <- orla_tp_2023 - quadfit5t$fitted.values
+key_freqs5t <- c()
+for(i in 1:length(my_periodogram(zt5))){
+  if(my_periodogram(zt5)[i] > 0.00001){
+    key_freqs5t <- c(key_freqs5t, freq[i])
+  }
+}
+key_freqs5t <- key_freqs5t[25:34]
+seasonqfit5t <- lm(create_formula(key_freqs5t))
+yt5 <- zt5 - seasonqfit5t$fitted.values
+
+# fort myers
+quadfit6t <- lm(fort_tp_2023 ~ poly(t, 2, raw=TRUE))
+zt6 <- fort_tp_2023 - quadfit6t$fitted.values
+key_freqs6t <- c()
+for(i in 1:length(my_periodogram(zt6))){
+  if(my_periodogram(zt6)[i] > 0.00001){
+    key_freqs6t <- c(key_freqs6t, freq[i])
+  }
+}
+key_freqs6t <- key_freqs6t[25:34]
+seasonqfit6t <- lm(create_formula(key_freqs6t))
+yt6 <- zt6 - seasonqfit6t$fitted.values
+
+
+
+
 # monthly approach
 # miami
 quadfitm <- lm(miami_w ~ poly(tm, 2, raw=TRUE))
@@ -303,7 +385,7 @@ yspecm6 <- ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1,1
 y_garchm6 <- ugarchfit(spec = yspecm6, data = ym6, solver="hybrid")
 y_gar_resm6 <- y_garchm6@fit$residuals
 
-# precipitation
+# monthly precipitation
 # miami
 quadfitmt <- lm(miami_tp ~ poly(tm, 2, raw=TRUE))
 zmt <- miami_tp - quadfitmt$fitted.values
