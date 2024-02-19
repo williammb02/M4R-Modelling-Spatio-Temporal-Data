@@ -54,19 +54,6 @@ g44 <- stepAIC.ghyp(y4, silent=TRUE)
 g55 <- stepAIC.ghyp(y5, silent=TRUE)
 g66 <- stepAIC.ghyp(y6, silent=TRUE)
 
-# take one day of data
-y11o <- pghyp(y[1:24], object=g11$best.model)
-y22o <- pghyp(y2[1:24], object=g22$best.model)
-y33o <- pghyp(y3[1:24], object=g33$best.model)
-y44o <- pghyp(y4[1:24], object=g44$best.model)
-y55o <- pghyp(y5[1:24], object=g55$best.model)
-y66o <- pghyp(y6[1:24], object=g66$best.model)
-
-svinedatao <- cbind(y11o, y22o, y33o, y44o, y55o, y66o)
-colnames(svinedatao) <- c("M", "Tam", "Tal", "J", "O", "FM")
-s_fit1 <- svinecop(svinedatao, p=7)
-plot(s_fit1, var_names="use")
-
 # 1 month of data
 y11 <- pghyp(y[1:504], object=g11$best.model)
 y22 <- pghyp(y2[1:504], object=g22$best.model)
@@ -116,17 +103,17 @@ g44m <- stepAIC.ghyp(ym4, silent=TRUE)
 g55m <- stepAIC.ghyp(ym5, silent=TRUE)
 g66m <- stepAIC.ghyp(ym6, silent=TRUE)
 
-y11m <- pghyp(ym[1:120], object=g11m$best.model)
+y11m <- pghyp(ym[1:480], object=g11m$best.model)
 y11m[is.na(y11m)] <- mean(y11m[!is.na(y11m)])
-y22m <- pghyp(ym2[1:120], object=g22m$best.model)
+y22m <- pghyp(ym2[1:480], object=g22m$best.model)
 y22m[is.na(y22m)] <- mean(y22m[!is.na(y22m)])
-y33m <- pghyp(ym3[1:120], object=g33m$best.model)
+y33m <- pghyp(ym3[1:480], object=g33m$best.model)
 y33m[is.na(y33m)] <- mean(y33m[!is.na(y33m)])
-y44m <- pghyp(ym4[1:120], object=g44m$best.model)
+y44m <- pghyp(ym4[1:480], object=g44m$best.model)
 y44m[is.na(y44m)] <- mean(y44m[!is.na(y44m)])
-y55m <- pghyp(ym5[1:120], object=g55m$best.model)
+y55m <- pghyp(ym5[1:480], object=g55m$best.model)
 y55m[is.na(y55m)] <- mean(y55m[!is.na(y55m)])
-y66m <- pghyp(ym6[1:120], object=g66m$best.model)
+y66m <- pghyp(ym6[1:480], object=g66m$best.model)
 y66m[is.na(y66m)] <- mean(y66m[!is.na(y66m)])
 
 svinedatam <- cbind(y11m, y22m, y33m, y44m, y55m, y66m)
@@ -142,17 +129,17 @@ g44mt <- stepAIC.ghyp(ymt4, silent=TRUE)
 g55mt <- stepAIC.ghyp(ymt5, silent=TRUE)
 g66mt <- stepAIC.ghyp(ymt6, silent=TRUE)
 
-y11mt <- pghyp(ymt[1:120], object=g11m$best.model)
+y11mt <- pghyp(ymt[1:480], object=g11m$best.model)
 y11mt[is.na(y11mt)] <- mean(y11mt[!is.na(y11mt)])
-y22mt <- pghyp(ymt2[1:120], object=g22m$best.model)
+y22mt <- pghyp(ymt2[1:480], object=g22m$best.model)
 y22mt[is.na(y22mt)] <- mean(y22mt[!is.na(y22mt)])
-y33mt <- pghyp(ymt3[1:120], object=g33m$best.model)
+y33mt <- pghyp(ymt3[1:480], object=g33m$best.model)
 y33mt[is.na(y33mt)] <- mean(y33mt[!is.na(y33mt)])
-y44mt <- pghyp(ymt4[1:120], object=g44m$best.model)
+y44mt <- pghyp(ymt4[1:480], object=g44m$best.model)
 y44mt[is.na(y44mt)] <- mean(y44mt[!is.na(y44mt)])
-y55mt <- pghyp(ymt5[1:120], object=g55m$best.model)
+y55mt <- pghyp(ymt5[1:480], object=g55m$best.model)
 y55mt[is.na(y55mt)] <- mean(y55mt[!is.na(y55mt)])
-y66mt <- pghyp(ymt6[1:120], object=g66m$best.model)
+y66mt <- pghyp(ymt6[1:480], object=g66m$best.model)
 y66mt[is.na(y66mt)] <- mean(y66mt[!is.na(y66mt)])
 
 svinedatamt <- cbind(y11m, y22m, y33m, y44m, y55m, y66m, y11mt, y22mt, y33mt, y44mt, y55mt, y66mt)
@@ -222,7 +209,7 @@ plot(s_fitgev, var_names="use")
 
 
 
-# ggplots to show the dependence 
+# plots to show the dependence 
 flo <- map_data("state", region = "florida")
 cities <- data.frame(
   city = c("Miami (1)", "Tampa (2)", "Tallahassee (3)", "Jacksonville (4)", "Orlando (5)", "Fort Myers (6)"),
@@ -269,6 +256,78 @@ edgess3 <- data.frame(
   lon2 = c(-81.9, -82.5, -81.4, -81.7, -84.2),
   lat2 = c(26.6, 28.0, 28.5, 30.3, 30.4)
 )
+edgestphour <- data.frame(
+  from = c("Miami", "Orlando", "Tallahassee", "Tallahassee"),
+  to = c("Orlando", "Tallahassee", "Jacksonville", "Tampa"), 
+  lon = c(-80.2, -81.4, -84.2, -84.2),
+  lat = c(25.8, 28.5, 30.4, 30.4),
+  lon2 = c(-81.4, -84.2, -81.7, -82.5),
+  lat2 = c(28.5, 30.4, 30.3, 28.0)
+)
+edgesextra <- data.frame(
+  from = c("Tallahassee"),
+  to = c("Jacksonville"),
+  lon = c(-84.2),
+  lat = c(30.4),
+  lon2 = c(-81.7),
+  lat2 = c(30.3)
+)
+edgestpmonth <- data.frame(
+  from = c("Miami", "Jacksonville", "Tampa", "Tampa", "Tampa"),
+  to = c("Jacksonville", "Tampa", "Orlando", "Fort Myers", "Tallahassee"), 
+  lon = c(-80.2, -81.7, -82.5, -82.5, -82.5),
+  lat = c(25.8, 30.3, 28.0, 28.0, 28.0),
+  lon2 = c(-81.7, -82.5, -81.4, -81.9, -84.2),
+  lat2 = c(30.3, 28.0, 28.5, 26.6, 30.4)
+)
+edgesextram <- data.frame(
+  from = c("Tampa", "Tampa"),
+  to = c("Fort Myers", "Orlando"),
+  lon = c(-82.5, -82.5),
+  lat = c(28.0, 28.0),
+  lon2 = c(-81.9, -81.4),
+  lat2 = c(26.6, 28.5)
+)
+edgestpgev <- data.frame(
+  from = c("Miami", "Jacksonville", "Tampa", "Tallahassee"),
+  to = c("Fort Meyers", "Tampa", "Tallahassee", "Orlando"), 
+  lon = c(-80.2, -81.7, -82.5, -84.2),
+  lat = c(25.8, 30.3, 28.0, 30.4),
+  lon2 = c(-81.9, -82.5, -84.2, -81.4),
+  lat2 = c(26.6, 28.0, 30.4, 28.5)
+)
+edgesextragev<- data.frame(
+  from = c("Miami"),
+  to = c("Fort Myers"),
+  lon = c(-80.2),
+  lat = c(25.8),
+  lon2 = c(-81.9),
+  lat2 = c(26.6)
+)
+linkh <- data.frame(
+  from = c("Orlando", "Tallahassee"),
+  to = c("Fort Myers", "Miami"),
+  lon = c(-81.4, -84.2),
+  lat = c(28.5, 30.4),
+  lon2 = c(-81.9, -80.2),
+  lat2 = c(26.6, 25.8)
+)
+linkm <- data.frame(
+  from = c("Tallahassee"),
+  to = c("Fort Myers"),
+  lon = c(-84.2),
+  lat = c(30.4),
+  lon2 = c(-81.9),
+  lat2 = c(26.6)
+)
+linkgev <- data.frame(
+  from = c("Tampa", "Miami"),
+  to = c("Jacksonville", "Miami"),
+  lon = c(-82.5, -80.2),
+  lat = c(28.0, 25.8),
+  lon2 = c(-81.7, -80.2),
+  lat2 = c(30.3, 25.8)
+)
 
 ggplot() +
   ggtitle("Map of Florida and Cities in the D-Vine and S-Vine Copula Models") +
@@ -293,3 +352,118 @@ ggplot() +
   geom_text(data = cities, aes(x = lon, y = lat, label = city), 
             color = "black", size = 4, vjust = -1) +
   coord_fixed(ratio = 1.3)
+
+# hourly joint plot
+ggplot() +
+  ggtitle("Map of Florida and Cities in the S-Vine Copula Model") +
+  geom_polygon(data = flo, aes(x = long, y = lat, group = group), 
+               fill = "grey", color = "black") +
+  geom_point(data = cities, aes(x = lon, y = lat), color = "black", size = 3) +
+  geom_segment(data = edgesd, 
+               aes(x = lon, y = lat, xend = lon2, yend = lat2, group = NULL),
+               color = "red", size = 0.5) +
+  geom_segment(data = edgestphour, 
+               aes(x = lon, y = lat, xend = lon2, yend = lat2, group = NULL),
+               color = "blue", size = 0.5) +
+  geom_segment(data = linkh, 
+               aes(x = lon, y = lat, xend = lon2, yend = lat2, group = NULL),
+               color = "black", size = 0.5, linetype=2) +
+  geom_segment(data = edgesextra,
+               aes(x = lon, y = lat, xend = lon2, yend = lat2, group = NULL),
+               color = "purple", size = 0.5) +
+  geom_text(data = cities, aes(x = lon, y = lat, label = city), 
+            color = "black", size = 4, vjust = -1) +
+  coord_fixed(ratio = 1.3)
+# monthly joint plot
+ggplot() +
+  ggtitle("Map of Florida and Cities in the S-Vine Copula Model") +
+  geom_polygon(data = flo, aes(x = long, y = lat, group = group), 
+               fill = "grey", color = "black") +
+  geom_point(data = cities, aes(x = lon, y = lat), color = "black", size = 3) +
+  geom_segment(data = edgestpmonth, 
+               aes(x = lon, y = lat, xend = lon2, yend = lat2, group = NULL),
+               color = "blue", size = 0.5) +
+  geom_segment(data = edgesd, 
+               aes(x = lon, y = lat, xend = lon2, yend = lat2, group = NULL),
+               color = "red", size = 0.5) +
+  geom_segment(data = linkm, 
+               aes(x = lon, y = lat, xend = lon2, yend = lat2, group = NULL),
+               color = "black", size = 0.5, linetype=2) +
+  geom_segment(data = edgesextram, 
+               aes(x = lon, y = lat, xend = lon2, yend = lat2, group = NULL),
+               color = "purple", size = 0.5) +
+  geom_text(data = cities, aes(x = lon, y = lat, label = city), 
+            color = "black", size = 4, vjust = -1) +
+  coord_fixed(ratio = 1.3)
+# daily maximum joint plot 
+ggplot() +
+  ggtitle("Map of Florida and Cities in the S-Vine Copula Model") +
+  geom_polygon(data = flo, aes(x = long, y = lat, group = group), 
+               fill = "grey", color = "black") +
+  geom_point(data = cities, aes(x = lon, y = lat), color = "black", size = 3) +
+  geom_segment(data = edgestpgev, 
+               aes(x = lon, y = lat, xend = lon2, yend = lat2, group = NULL),
+               color = "blue", size = 0.5) +
+  geom_segment(data = edgesd, 
+               aes(x = lon, y = lat, xend = lon2, yend = lat2, group = NULL),
+               color = "red", size = 0.5) +
+  geom_segment(data = linkgev, 
+               aes(x = lon, y = lat, xend = lon2, yend = lat2, group = NULL),
+               color = "black", size = 0.8, linetype=2) +
+  geom_segment(data = edgesextragev, 
+               aes(x = lon, y = lat, xend = lon2, yend = lat2, group = NULL),
+               color = "purple", size = 0.5) +
+  geom_text(data = cities, aes(x = lon, y = lat, label = city), 
+            color = "black", size = 4, vjust = -1) +
+  coord_fixed(ratio = 1.3)
+
+
+# simulation comparison
+set.seed(5)
+miami_svine <- c()
+for(i in 1:1000){
+  miami_svine[i] <- svinecop_sim(1, 1, s_fit2)[1]
+}
+miami_svine <- qghyp(miami_svine, object=g11$best.model)
+miami_armagarch <- ugarchsim(y_garch, n.sim=1000)
+miami_armagarch <- miami_armagarch@simulation$seriesSim
+miami_test <- sample(y, size=1000)
+
+par(mfrow=c(1,3))
+hist(miami_test, breaks=30, main="Original")
+hist(miami_armagarch, breaks=30, main="ARMA-GARCH")
+hist(miami_svine, breaks=30, main="S-Vine")
+
+
+plot(1:1000, miami_test, type="l", col="black", xlab="", ylab="y")
+lines(miami_armagarch, col="red")
+lines(miami_svine, col="blue")
+legend("topright", legend=c("Original", "ARMA-GARCH", "S-Vine"), col=c("black", "red", "blue"),
+       lty=1, cex=0.8)
+
+c(mean(y), mean(miami_test), mean(miami_armagarch), mean(miami_svine))
+c(var(y), var(miami_test), var(miami_armagarch), var(miami_svine))
+
+
+
+# compare moments
+armagarch_means <- c()
+armagarch_vars <- c()
+for(i in 1:1000){
+  sims <- ugarchsim(y_garch, n.sim=100)
+  armagarch_means[i] <- mean(sims@simulation$seriesSim)
+  armagarch_vars[i] <- var(sims@simulation$seriesSim)
+}
+hist(armagarch_means, breaks=100, main="Mean", xlab="Mean of Simulation")
+hist(armagarch_vars, breaks=100, main="Variance", xlab="Variance of Simulation")
+
+svine_means <- c()
+svine_vars <- c()
+for(i in 1:1000){
+  sims <- svinecop_sim(100, 1, s_fit2)[,1]
+  svine_means[i] <- mean(sims)
+  svine_vars[i] <- var(sims)
+}
+
+hist(svine_means, breaks=100, main="Mean", xlab="Mean of Simulation")
+hist(svine_vars, breaks=100, main="Variance", xlab="Variance of Simulation")
