@@ -460,7 +460,7 @@ hist(armagarch_vars, breaks=100, main="Variance", xlab="Variance of Simulation")
 svine_means <- c()
 svine_vars <- c()
 for(i in 1:1000){
-  sims <- svinecop_sim(100, 1, s_fit2)[,1]
+  sims <- svinecop_sim(30, 1, s_fit2)[,1]
   svine_means[i] <- mean(sims)
   svine_vars[i] <- var(sims)
 }
