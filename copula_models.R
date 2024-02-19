@@ -5,21 +5,6 @@ library(rvinecopulib)
 library(svines)
 library(ggraph)
 
-# fit a copula model to residuals at 3 locations
-
-cop_res <- cbind(y_gar_res, y2_gar_res, y3_gar_res)
-cop_res <- cop_res - min(cop_res)
-cop_res <- cop_res / max(cop_res)
-cop_fit1 <- RVineStructureSelect(as.copuladata(cop_res))
-
-summary(cop_fit1)
-
-# method by rescaling everything
-copres <- cbind(y_gar_res, y2_gar_res, y3_gar_res, y4_gar_res, y5_gar_res, y6_gar_res)
-copres <- copres - min(copres)
-copres <- copres / max(copres)
-cop_fit2 <- RVineStructureSelect(as.copuladata(copres))
-
 # method using the probability integral transform
 g1 <- stepAIC.ghyp(y_gar_res, silent=TRUE)
 g2 <- stepAIC.ghyp(y2_gar_res, silent=TRUE)
@@ -83,12 +68,12 @@ s_fit1 <- svinecop(svinedatao, p=7)
 plot(s_fit1, var_names="use")
 
 # 1 month of data
-y11 <- pghyp(y[1:672], object=g11$best.model)
-y22 <- pghyp(y2[1:672], object=g22$best.model)
-y33 <- pghyp(y3[1:672], object=g33$best.model)
-y44 <- pghyp(y4[1:672], object=g44$best.model)
-y55 <- pghyp(y5[1:672], object=g55$best.model)
-y66 <- pghyp(y6[1:672], object=g66$best.model)
+y11 <- pghyp(y[1:504], object=g11$best.model)
+y22 <- pghyp(y2[1:504], object=g22$best.model)
+y33 <- pghyp(y3[1:504], object=g33$best.model)
+y44 <- pghyp(y4[1:504], object=g44$best.model)
+y55 <- pghyp(y5[1:504], object=g55$best.model)
+y66 <- pghyp(y6[1:504], object=g66$best.model)
 
 svinedata <- cbind(y11, y22, y33, y44, y55, y66)
 colnames(svinedata) <- c("M", "Tam", "Tal", "J", "O", "FM")
@@ -103,17 +88,23 @@ g44t <- stepAIC.ghyp(yt4, silent=TRUE)
 g55t <- stepAIC.ghyp(yt5, silent=TRUE)
 g66t <- stepAIC.ghyp(yt6, silent=TRUE)
 
-y11t <- pghyp(yt, object=g11t$best.model)
-y22t <- pghyp(yt2, object=g22t$best.model)
-y33t <- pghyp(yt3, object=g33t$best.model)
-y44t <- pghyp(yt4, object=g44t$best.model)
-y55t <- pghyp(yt5, object=g55t$best.model)
-y66t <- pghyp(yt6, object=g66t$best.model)
+y11t <- pghyp(yt[1:504], object=g11t$best.model)
+y11t[is.na(y11t)] <- mean(y11t[!is.na(y11t)])
+y22t <- pghyp(yt2[1:504], object=g22t$best.model)
+y22t[is.na(y22t)] <- mean(y22t[!is.na(y22t)])
+y33t <- pghyp(yt3[1:504], object=g33t$best.model)
+y33t[is.na(y33t)] <- mean(y33t[!is.na(y33t)])
+y44t <- pghyp(yt4[1:504], object=g44t$best.model)
+y44t[is.na(y44t)] <- mean(y44t[!is.na(y44t)])
+y55t <- pghyp(yt5[1:504], object=g55t$best.model)
+y55t[is.na(y55t)] <- mean(y55t[!is.na(y55t)])
+y66t <- pghyp(yt6[1:504], object=g66t$best.model)
+y66t[is.na(y66t)] <- mean(y66t[!is.na(y66t)])
 
 svinedatat <- cbind(y11, y22, y33, y44, y55, y66, y11t, y22t, y33t, y44t, y55t, y66t)
 colnames(svinedatat) <- c("M W", "Tam W", "Tal W", "J W", "O W", "FM W", "M P", "Tam P", "Tal P", "J P", "O P", "FM P")
 s_fitt <- svinecop(svinedatat, p=3)
-plot(s_fitmtt, var_names="use")
+plot(s_fitt, var_names="use")
 
 
 
@@ -171,16 +162,63 @@ plot(s_fitmt, var_names="use")
 
 
 # extreme value copula 
+daily_max <- function(x){
+  max_list <- split(x, rep(1:(length(x)/24), each=24))
+  v <- as.vector(sapply(max_list, max))
+  return(v)
+}
+
 # probability integral transform looking at extreme winds
 # calculate max daily wind
+w1 <- daily_max(y)
+w2 <- daily_max(y2)
+w3 <- daily_max(y3)
+w4 <- daily_max(y4)
+w5 <- daily_max(y5)
+w6 <- daily_max(y6)
 # fit gev dist
+# loc, scale, shape
+w1gev <- gev.fit(w1)
+w2gev <- gev.fit(w2)
+w3gev <- gev.fit(w3)
+w4gev <- gev.fit(w4)
+w5gev <- gev.fit(w5)
+w6gev <- gev.fit(w6)
 
-# probability integral transform looking at extreme precipitations
+w11 <- pgev(w1, location=w1gev$mle[1], scale=w1gev$mle[2], shape=w1gev$mle[3])
+w22 <- pgev(w2, location=w2gev$mle[1], scale=w2gev$mle[2], shape=w2gev$mle[3])
+w33 <- pgev(w3, location=w3gev$mle[1], scale=w3gev$mle[2], shape=w3gev$mle[3])
+w44 <- pgev(w4, location=w4gev$mle[1], scale=w4gev$mle[2], shape=w4gev$mle[3])
+w55 <- pgev(w5, location=w5gev$mle[1], scale=w5gev$mle[2], shape=w5gev$mle[3])
+w66 <- pgev(w6, location=w6gev$mle[1], scale=w6gev$mle[2], shape=w6gev$mle[3])
+
 # calculate max daily precip
+p1 <- daily_max(yt)
+p2 <- daily_max(yt2)
+p3 <- daily_max(yt3)
+p4 <- daily_max(yt4)
+p5 <- daily_max(yt5)
+p6 <- daily_max(yt6)
 # fit gev dist
+p1gev <- gev.fit(p1)
+p2gev <- gev.fit(p2)
+p3gev <- gev.fit(p3)
+p4gev <- gev.fit(p4)
+p5gev <- gev.fit(p5)
+p6gev <- gev.fit(p6)
+# probability integral transform looking at extreme precipitations
+p11 <- pgev(p1, location=p1gev$mle[1], scale=p1gev$mle[2], shape=p1gev$mle[3])
+p22 <- pgev(p2, location=p2gev$mle[1], scale=p2gev$mle[2], shape=p2gev$mle[3])
+p33 <- pgev(p3, location=p3gev$mle[1], scale=p3gev$mle[2], shape=p3gev$mle[3])
+p44 <- pgev(p4, location=p4gev$mle[1], scale=p4gev$mle[2], shape=p4gev$mle[3])
+p55 <- pgev(p5, location=p5gev$mle[1], scale=p5gev$mle[2], shape=p5gev$mle[3])
+p66 <- pgev(p6, location=p6gev$mle[1], scale=p6gev$mle[2], shape=p6gev$mle[3])
 
 # stationary vine copula model
-
+svinegevdata <- cbind(w11, w22, w33, w44, w55, w66, p11, p22, p33, p44, p55, p66)
+colnames(svinegevdata) <- c("M W", "Tam W", "Tal W", "J W", "O W", "FM W", "M P", "Tam P", "Tal P", "J P", "O P", "FM P")
+s_fitgev <- svinecop(svinegevdata, p=3)
+plot(s_fitgev, var_names="use")
 
 
 
