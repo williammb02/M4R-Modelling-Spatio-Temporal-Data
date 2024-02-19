@@ -461,8 +461,9 @@ svine_means <- c()
 svine_vars <- c()
 for(i in 1:1000){
   sims <- svinecop_sim(30, 1, s_fit2)[,1]
-  svine_means[i] <- mean(sims)
-  svine_vars[i] <- var(sims)
+  simsnew <- qghyp(sims, object=g11$best.model)
+  svine_means[i] <- mean(simsnew)
+  svine_vars[i] <- var(simsnew)
 }
 
 hist(svine_means, breaks=100, main="Mean", xlab="Mean of Simulation")
