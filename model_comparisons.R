@@ -28,15 +28,21 @@ c(var(y), var(miami_test), var(miami_armagarch), var(miami_svine))
 
 
 # compare moments
+sample_means <- c()
+sample_vars <- c()
+for(i in 1:1000){
+  sims <- sample(y, size=50)
+  sample_means[i] <- mean(sims)
+  sample_vars[i] <- var(sims)
+}
+
 armagarch_means <- c()
 armagarch_vars <- c()
 for(i in 1:1000){
-  sims <- ugarchsim(y_garch, n.sim=100)
+  sims <- ugarchsim(y_garch, n.sim=50)
   armagarch_means[i] <- mean(sims@simulation$seriesSim)
   armagarch_vars[i] <- var(sims@simulation$seriesSim)
 }
-hist(armagarch_means, breaks=100, main="Mean", xlab="Mean of Simulation")
-hist(armagarch_vars, breaks=100, main="Variance", xlab="Variance of Simulation")
 
 svine_means <- c()
 svine_vars <- c()
@@ -47,5 +53,11 @@ for(i in 1:1000){
   svine_vars[i] <- var(simsnew)
 }
 
-hist(svine_means, breaks=100, main="Mean", xlab="Mean of Simulation")
-hist(svine_vars, breaks=100, main="Variance", xlab="Variance of Simulation")
+par(mfrow=c(1,3))
+hist(sample_means, breaks=30, main="Mean (Resample)", xlab="Mean of Simulation")
+hist(armagarch_means, breaks=30, main="Mean (ARMA-GARCH)", xlab="Mean of Simulation")
+hist(svine_means, breaks=30, main="Mean (S-Vine)", xlab="Mean of Simulation")
+
+hist(sample_vars, breaks=30, main="Variance (Resample)", xlab="Variance of Simulation")
+hist(armagarch_vars, breaks=30, main="Variance (ARMA-GARCH)", xlab="Variance of Simulation")
+hist(svine_vars, breaks=30, main="Variance (S-Vine)", xlab="Variance of Simulation")
