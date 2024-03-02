@@ -14,5 +14,6 @@
  - time_series_models.R: code fitting various decompositions and time series models to the data
  - time_series_extremes.R: code applying extreme value theory to our time series and residuals
  - copula_models.R: code fitting copula models to stationary time series and residuals
+ - model_comparisons.R: code evaluating and comparing time series and copula model fits and performance
 
  
