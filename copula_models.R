@@ -94,6 +94,9 @@ s_fitt <- svinecop(svinedatat, p=3)
 plot(s_fitt, var_names="use")
 
 
+# hourly hurricane season, june-aug 2023
+
+
 
 # using monthly data
 g11m <- stepAIC.ghyp(ym, silent=TRUE)
@@ -206,6 +209,15 @@ svinegevdata <- cbind(w11, w22, w33, w44, w55, w66, p11, p22, p33, p44, p55, p66
 colnames(svinegevdata) <- c("M W", "Tam W", "Tal W", "J W", "O W", "FM W", "M P", "Tam P", "Tal P", "J P", "O P", "FM P")
 s_fitgev <- svinecop(svinegevdata, p=3)
 plot(s_fitgev, var_names="use")
+
+
+# maximum daily during hurricane season, june-aug 2023
+svinegevdata_h <- cbind(w11[151:243], w22[151:243], w33[151:243], w44[151:243], w55[151:243], w66[151:243], 
+                        p11[151:243], p22[151:243], p33[151:243], p44[151:243], p55[151:243], p66[151:243])
+colnames(svinegevdata_h) <- c("M W", "Tam W", "Tal W", "J W", "O W", "FM W", "M P", "Tam P", "Tal P", "J P", "O P", "FM P")
+s_fitgev_h <- svinecop(svinegevdata_h, p=3)
+plot(s_fitgev_h, var_names="use")
+
 
 
 
@@ -329,6 +341,23 @@ linkgev <- data.frame(
   lat2 = c(30.3, 25.8)
 )
 
+edgeswhurricane <- data.frame(
+  from = c("Miami", "Fort Myers", "Fort Myers", "Orlando", "Jacksonville"),
+  to = c("Fort Myers", "Tampa", "Orlando", "Jacksonville", "Tallahassee"), 
+  lon = c(-80.2, -81.9, -81.9, -81.4, -81.7),
+  lat = c(25.8, 26.6, 26.6, 28.5, 30.3),
+  lon2 = c(-81.9, -82.5, -81.4, -81.7, -84.2),
+  lat2 = c(26.6, 28.0, 28.5, 30.3, 30.4)
+)
+edgestphurricane <- data.frame(
+  from = c("Jacksonville", "Tampa", "Tampa", "Tampa"),
+  to = c("Tampa", "Orlando", "Fort Myers", "Tallahassee"), 
+  lon = c(-81.7, -82.5, -82.5, -82.5),
+  lat = c(30.3, 28.0, 28.0, 28.0),
+  lon2 = c(-82.5, -81.4, -81.9, -84.2),
+  lat2 = c(28.0, 28.5, 26.6, 30.4)
+)
+
 ggplot() +
   ggtitle("Map of Florida and Cities in the D-Vine and S-Vine Copula Models") +
   geom_polygon(data = flo, aes(x = long, y = lat, group = group), 
@@ -417,54 +446,29 @@ ggplot() +
             color = "black", size = 4, vjust = -1) +
   coord_fixed(ratio = 1.3)
 
+# hurricane season wind, then precip
+ggplot() +
+  ggtitle("Map of Florida and Cities in the S-Vine Copula Model") +
+  geom_polygon(data = flo, aes(x = long, y = lat, group = group), 
+               fill = "grey", color = "black") +
+  geom_point(data = cities, aes(x = lon, y = lat), color = "red", size = 3) +
+  geom_segment(data = edgeswhurricane, 
+               aes(x = lon, y = lat, xend = lon2, yend = lat2, group = NULL),
+               color = "red", size = 1) +
+  geom_text(data = cities, aes(x = lon, y = lat, label = city), 
+            color = "black", size = 4, vjust = -1) +
+  coord_fixed(ratio = 1.3)
 
-# simulation comparison
-set.seed(5)
-miami_svine <- c()
-for(i in 1:1000){
-  miami_svine[i] <- svinecop_sim(1, 1, s_fit2)[1]
-}
-miami_svine <- qghyp(miami_svine, object=g11$best.model)
-miami_armagarch <- ugarchsim(y_garch, n.sim=1000)
-miami_armagarch <- miami_armagarch@simulation$seriesSim
-miami_test <- sample(y, size=1000)
-
-par(mfrow=c(1,3))
-hist(miami_test, breaks=30, main="Original")
-hist(miami_armagarch, breaks=30, main="ARMA-GARCH")
-hist(miami_svine, breaks=30, main="S-Vine")
-
-
-plot(1:1000, miami_test, type="l", col="black", xlab="", ylab="y")
-lines(miami_armagarch, col="red")
-lines(miami_svine, col="blue")
-legend("topright", legend=c("Original", "ARMA-GARCH", "S-Vine"), col=c("black", "red", "blue"),
-       lty=1, cex=0.8)
-
-c(mean(y), mean(miami_test), mean(miami_armagarch), mean(miami_svine))
-c(var(y), var(miami_test), var(miami_armagarch), var(miami_svine))
+ggplot() +
+  ggtitle("Map of Florida and Cities in the S-Vine Copula Model") +
+  geom_polygon(data = flo, aes(x = long, y = lat, group = group), 
+               fill = "grey", color = "black") +
+  geom_point(data = cities, aes(x = lon, y = lat), color = "blue", size = 3) +
+  geom_segment(data = edgestphurricane, 
+               aes(x = lon, y = lat, xend = lon2, yend = lat2, group = NULL),
+               color = "blue", size = 1) +
+  geom_text(data = cities, aes(x = lon, y = lat, label = city), 
+            color = "black", size = 4, vjust = -1) +
+  coord_fixed(ratio = 1.3)
 
 
-
-# compare moments
-armagarch_means <- c()
-armagarch_vars <- c()
-for(i in 1:1000){
-  sims <- ugarchsim(y_garch, n.sim=100)
-  armagarch_means[i] <- mean(sims@simulation$seriesSim)
-  armagarch_vars[i] <- var(sims@simulation$seriesSim)
-}
-hist(armagarch_means, breaks=100, main="Mean", xlab="Mean of Simulation")
-hist(armagarch_vars, breaks=100, main="Variance", xlab="Variance of Simulation")
-
-svine_means <- c()
-svine_vars <- c()
-for(i in 1:1000){
-  sims <- svinecop_sim(30, 1, s_fit2)[,1]
-  simsnew <- qghyp(sims, object=g11$best.model)
-  svine_means[i] <- mean(simsnew)
-  svine_vars[i] <- var(simsnew)
-}
-
-hist(svine_means, breaks=100, main="Mean", xlab="Mean of Simulation")
-hist(svine_vars, breaks=100, main="Variance", xlab="Variance of Simulation")
