@@ -1,5 +1,3 @@
-
-
 # simulation comparison
 set.seed(5)
 miami_svine <- c()
@@ -11,12 +9,13 @@ miami_armagarch <- ugarchsim(y_garch, n.sim=1000)
 miami_armagarch <- miami_armagarch@simulation$seriesSim
 miami_test <- sample(y, size=1000)
 
+# histogram of realisations
 par(mfrow=c(1,3))
 hist(miami_test, breaks=30, main="Original")
 hist(miami_armagarch, breaks=30, main="ARMA-GARCH")
 hist(miami_svine, breaks=30, main="S-Vine")
 
-
+# 
 plot(1:1000, miami_test, type="l", col="black", xlab="", ylab="y")
 lines(miami_armagarch, col="red")
 lines(miami_svine, col="blue")
@@ -42,7 +41,7 @@ hist(armagarch_vars, breaks=100, main="Variance", xlab="Variance of Simulation")
 svine_means <- c()
 svine_vars <- c()
 for(i in 1:1000){
-  sims <- svinecop_sim(100, 1, s_fit2)[,1]
+  sims <- svinecop_sim(50, 1, s_fit2)[,1]
   simsnew <- qghyp(sims, object=g11$best.model)
   svine_means[i] <- mean(simsnew)
   svine_vars[i] <- var(simsnew)
