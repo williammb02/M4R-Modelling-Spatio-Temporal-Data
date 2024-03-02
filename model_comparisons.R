@@ -15,7 +15,7 @@ hist(miami_test, breaks=30, main="Original")
 hist(miami_armagarch, breaks=30, main="ARMA-GARCH")
 hist(miami_svine, breaks=30, main="S-Vine")
 
-# 
+# simulations
 plot(1:1000, miami_test, type="l", col="black", xlab="", ylab="y")
 lines(miami_armagarch, col="red")
 lines(miami_svine, col="blue")
