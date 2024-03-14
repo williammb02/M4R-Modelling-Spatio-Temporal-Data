@@ -189,5 +189,27 @@ QFcor_plot(miami_u10, miami_v10, grid=100, xlim=c(0.05, 0.95), ylim=c(0.05, 0.95
 QFcor_plot(miami_u10_rem, miami_v10_rem, grid=100, xlim=c(0.05, 0.95), ylim=c(0.05, 0.95))
 CDFcor_plot(miami_u10, miami_v10, grid=100, xlim=c(-4, 0.8), ylim=c(-2, 1.5))
 
+# here, use variables from time_series_models.R and copula_models.R
+# correlation plots for copula model interpretation
 
+# daily maximum wind speed
+# tampa vs miami
+QFcor_plot(w22, w11, grid=100, xlim=c(0.05, 0.95), ylim=c(0.05, 0.95))
+QFcor_plot(w22[151:243], w11[151:243], grid=100, xlim=c(0.05, 0.95), ylim=c(0.05, 0.95))
+# tampa vs orlando
+QFcor_plot(w22, w55, grid=100, xlim=c(0.05, 0.95), ylim=c(0.05, 0.95))
+QFcor_plot(w22[151:243], w55[151:243], grid=100, xlim=c(0.05, 0.95), ylim=c(0.05, 0.95))
+
+# talla vs jacksonville
+QFcor_plot(w33, w44, grid=100, xlim=c(0.05, 0.95), ylim=c(0.05, 0.95))
+# talla vs miami
+QFcor_plot(w33, w11, grid=100, xlim=c(0.05, 0.95), ylim=c(0.05, 0.95))
+
+# daily maximum precipitation
+# tampa vs miami
+QFcor_plot(p22, p11, grid=100, xlim=c(0.05, 0.95), ylim=c(0.05, 0.95))
+QFcor_plot(p22[151:243], p11[151:243], grid=100, xlim=c(0.05, 0.95), ylim=c(0.05, 0.95))
+# tampa vs orlando
+QFcor_plot(p22, p55, grid=100, xlim=c(0.05, 0.95), ylim=c(0.05, 0.95))
+QFcor_plot(p22[151:243], p55[151:243], grid=100, xlim=c(0.05, 0.95), ylim=c(0.05, 0.95))
 
