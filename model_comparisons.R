@@ -53,11 +53,10 @@ for(i in 1:1000){
   svine_vars[i] <- var(simsnew)
 }
 
-par(mfrow=c(1,3))
-hist(sample_means, breaks=30, main="Mean (Resample)", xlab="Mean of Simulation")
-hist(armagarch_means, breaks=30, main="Mean (ARMA-GARCH)", xlab="Mean of Simulation")
-hist(svine_means, breaks=30, main="Mean (S-Vine)", xlab="Mean of Simulation")
+par(mfrow=c(1,2))
+truehist(armagarch_means,  main="Mean (ARMA-GARCH)", xlab="Mean of Simulation", col="grey")
+truehist(svine_means,  main="Mean (S-Vine)", xlab="Mean of Simulation", col="grey")
 
-hist(sample_vars, breaks=30, main="Variance (Resample)", xlab="Variance of Simulation")
-hist(armagarch_vars, breaks=30, main="Variance (ARMA-GARCH)", xlab="Variance of Simulation")
-hist(svine_vars, breaks=30, main="Variance (S-Vine)", xlab="Variance of Simulation")
+par(mfrow=c(1,2))
+truehist(armagarch_vars,  main="Variance (ARMA-GARCH)", xlab="Variance of Simulation", col="grey")
+truehist(svine_vars,  main="Variance (S-Vine)", xlab="Variance of Simulation", col="grey")
