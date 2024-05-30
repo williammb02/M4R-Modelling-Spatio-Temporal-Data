@@ -351,11 +351,11 @@ edgeswhurricane <- data.frame(
 )
 edgestphurricane <- data.frame(
   from = c("Jacksonville", "Tampa", "Tampa", "Tampa"),
-  to = c("Tampa", "Orlando", "Fort Myers", "Tallahassee"), 
+  to = c("Tampa", "Orlando", "Miami", "Tallahassee"), 
   lon = c(-81.7, -82.5, -82.5, -82.5),
   lat = c(30.3, 28.0, 28.0, 28.0),
-  lon2 = c(-82.5, -81.4, -81.9, -84.2),
-  lat2 = c(28.0, 28.5, 26.6, 30.4)
+  lon2 = c(-82.5, -81.4, -80.2, -84.2),
+  lat2 = c(28.0, 28.5, 25.8, 30.4)
 )
 
 ggplot() +
